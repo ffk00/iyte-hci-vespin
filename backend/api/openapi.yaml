@@ -1,0 +1,1256 @@
+openapi: 3.1.0
+info:
+  title: Vespin Retro Companion API
+  version: 0.1.0
+  description: |
+    HTTP API for the Vespin Retro smart speaker companion mobile app.
+
+    **HCI course project — hardware interaction is fully simulated.**
+    No real Bluetooth, audio processing, firmware OTA, or device connectivity.
+    Simulated fields (firmware_version, battery_level, is_connected) are seeded
+    on the backend at device creation time.
+
+    ## Authentication
+    JWT bearer tokens. Two roles: `guest` and `registered`. Guests can pair
+    devices, manage EQ profiles, and run party sessions. Preferences and
+    firmware check are registered-only.
+
+    ## Conventions
+    - JSON request/response bodies, camelCase field names.
+    - Timestamps are RFC 3339 strings in UTC.
+    - IDs are UUIDs.
+    - PATCH for partial updates (never PUT).
+    - Error envelope: `{ "error": { "code": "...", "message": "..." } }`.
+
+servers:
+  - url: http://localhost:8080
+    description: Local development
+  - url: https://api.example.com
+    description: Production (placeholder — replace with real domain)
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Auth
+    description: Guest creation, registration, login, guest-to-registered conversion
+  - name: Users
+    description: Current user profile and preferences
+  - name: Devices
+    description: Paired speakers (CRUD)
+  - name: EQ Profiles
+    description: System presets and user-owned custom profiles, including copy-on-write fork
+  - name: Party Sessions
+    description: Multi-device session state and membership
+  - name: Firmware
+    description: Firmware version check (registered users only)
+
+paths:
+  # ---------------------------------------------------------------------------
+  # Auth
+  # ---------------------------------------------------------------------------
+
+  /auth/guest:
+    post:
+      tags: [Auth]
+      summary: Create a guest account
+      description: |
+        Creates an anonymous guest user and returns a JWT with `role=guest`.
+        No request body required.
+      security: []
+      responses:
+        '201':
+          description: Guest created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new account or convert current guest
+      description: |
+        Dual-mode endpoint:
+        - **No auth header:** creates a fresh registered user.
+        - **Valid guest JWT:** converts the current guest by setting email,
+          password, role, and `convertedAt`. All existing data (devices,
+          EQ profiles, party sessions) remains attached because the user row
+          is the same — only the role changes.
+
+        Calling this endpoint with a registered JWT returns
+        `409 already_registered`.
+      security:
+        - {}
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User registered (or guest converted)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/ValidationFailed'
+        '409':
+          description: Email already taken, or caller is already a registered user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                emailTaken:
+                  value:
+                    error:
+                      code: email_taken
+                      message: An account with this email already exists.
+                alreadyRegistered:
+                  value:
+                    error:
+                      code: already_registered
+                      message: This account is already registered.
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Log in with email and password
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/ValidationFailed'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: invalid_credentials
+                  message: Email or password is incorrect.
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  # ---------------------------------------------------------------------------
+  # Users
+  # ---------------------------------------------------------------------------
+
+  /users/me:
+    get:
+      tags: [Users]
+      summary: Get current user profile
+      responses:
+        '200':
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    patch:
+      tags: [Users]
+      summary: Update current user profile
+      description: |
+        Currently only `displayName` is editable. Available to both guests and
+        registered users — guests can personalize their displayed name before
+        committing to a full account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '200':
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/ValidationFailed'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /users/me/preferences:
+    get:
+      tags: [Users]
+      summary: Get current user preferences
+      description: |
+        Registered users only. Returns default values when the user has
+        never set a preference (no row exists yet).
+      responses:
+        '200':
+          description: Current preferences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Preferences'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/GuestForbidden'
+
+    patch:
+      tags: [Users]
+      summary: Update current user preferences
+      description: |
+        Registered users only. Upserts: creates the preferences row with
+        defaults plus the patch values if it doesn't exist, otherwise updates
+        only the patched fields.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreferencesUpdateRequest'
+      responses:
+        '200':
+          description: Updated preferences (full current state)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Preferences'
+        '400':
+          $ref: '#/components/responses/ValidationFailed'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/GuestForbidden'
+
+  # ---------------------------------------------------------------------------
+  # Devices
+  # ---------------------------------------------------------------------------
+
+  /devices:
+    get:
+      tags: [Devices]
+      summary: List the current user's devices
+      responses:
+        '200':
+          description: Devices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags: [Devices]
+      summary: Pair a new device
+      description: |
+        Creates a device for the current user. Simulated fields
+        (`firmwareVersion`, `batteryLevel`, `isConnected`) are seeded by the
+        backend at creation time.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceCreateRequest'
+      responses:
+        '201':
+          description: Device created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '400':
+          $ref: '#/components/responses/ValidationFailed'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /devices/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdPathParam'
+
+    get:
+      tags: [Devices]
+      summary: Get a single device
+      responses:
+        '200':
+          description: Device
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags: [Devices]
+      summary: Update a device
+      description: |
+        Partial update. Only `name` and `activeEqProfileId` are user-editable.
+        Setting `activeEqProfileId` to `null` clears the active profile.
+        Simulated fields cannot be updated through this endpoint.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceUpdateRequest'
+      responses:
+        '200':
+          description: Updated device
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '400':
+          description: Validation failed, or referenced EQ profile is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validationFailed:
+                  value:
+                    error:
+                      code: validation_failed
+                      message: Request validation failed.
+                invalidEQProfile:
+                  value:
+                    error:
+                      code: invalid_eq_profile_reference
+                      message: Referenced EQ profile does not exist or is not accessible.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [Devices]
+      summary: Unpair a device
+      description: |
+        Hard delete. Cascades to remove the device from any party sessions
+        it currently belongs to.
+      responses:
+        '204':
+          description: Deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ---------------------------------------------------------------------------
+  # EQ Profiles
+  # ---------------------------------------------------------------------------
+
+  /eq-profiles:
+    get:
+      tags: [EQ Profiles]
+      summary: List EQ profiles
+      description: |
+        Returns system presets and the current user's custom profiles.
+        Use the `type` query parameter to filter.
+        Ordering: system presets first by name (asc), then custom profiles
+        by `createdAt` (desc).
+      parameters:
+        - in: query
+          name: type
+          required: false
+          schema:
+            type: string
+            enum: [system, custom]
+          description: Filter by profile type. Omitted = both.
+      responses:
+        '200':
+          description: Profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EQProfile'
+        '400':
+          $ref: '#/components/responses/ValidationFailed'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags: [EQ Profiles]
+      summary: Create a custom EQ profile from scratch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EQProfileCreateRequest'
+      responses:
+        '201':
+          description: Created profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EQProfile'
+        '400':
+          $ref: '#/components/responses/ValidationFailed'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /eq-profiles/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdPathParam'
+
+    get:
+      tags: [EQ Profiles]
+      summary: Get a single EQ profile
+      description: |
+        Returns the profile if it is a system preset (accessible to all
+        authenticated users) or a custom profile owned by the current user.
+      responses:
+        '200':
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EQProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags: [EQ Profiles]
+      summary: Update a custom EQ profile
+      description: |
+        System presets are immutable. Attempting to PATCH a system preset
+        returns `403 system_preset_immutable`. The frontend should call
+        `POST /eq-profiles/{id}/fork` instead.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EQProfileUpdateRequest'
+      responses:
+        '200':
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EQProfile'
+        '400':
+          $ref: '#/components/responses/ValidationFailed'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Cannot modify a system preset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: system_preset_immutable
+                  message: System presets cannot be modified. Fork to a custom profile instead.
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [EQ Profiles]
+      summary: Delete a custom EQ profile
+      description: |
+        System presets cannot be deleted. If this profile is the
+        `activeEqProfileId` of any device, that reference is cleared
+        automatically (`ON DELETE SET NULL`). The frontend should invalidate
+        cached device data after a successful delete.
+      responses:
+        '204':
+          description: Deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Cannot delete a system preset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: system_preset_immutable
+                  message: System presets cannot be deleted.
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /eq-profiles/{id}/fork:
+    parameters:
+      - $ref: '#/components/parameters/IdPathParam'
+
+    post:
+      tags: [EQ Profiles]
+      summary: Fork a system preset (copy-on-write)
+      description: |
+        Creates a new custom EQ profile owned by the current user, based on
+        the modified bands provided. The original system preset is never
+        modified. Forking is only allowed on system presets — attempting
+        to fork a custom profile returns `400 not_a_system_preset`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EQProfileForkRequest'
+      responses:
+        '201':
+          description: Forked profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EQProfile'
+        '400':
+          description: Validation failed, or fork target is not a system preset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validationFailed:
+                  value:
+                    error:
+                      code: validation_failed
+                      message: Request validation failed.
+                notSystemPreset:
+                  value:
+                    error:
+                      code: not_a_system_preset
+                      message: Fork target must be a system preset.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ---------------------------------------------------------------------------
+  # Party Sessions
+  # ---------------------------------------------------------------------------
+
+  /party-sessions:
+    get:
+      tags: [Party Sessions]
+      summary: List the current user's party sessions
+      description: Ordered by `startedAt` descending.
+      parameters:
+        - in: query
+          name: status
+          required: false
+          schema:
+            type: string
+            enum: [active, paused, ended]
+          description: Filter by status. Omitted = all.
+      responses:
+        '200':
+          description: Sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PartySession'
+        '400':
+          $ref: '#/components/responses/ValidationFailed'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags: [Party Sessions]
+      summary: Create a party session
+      description: |
+        Creates an `active` session with the given devices. All devices in
+        `deviceIds` must belong to the current user. Validation and creation
+        happen in a single transaction.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartySessionCreateRequest'
+      responses:
+        '201':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartySession'
+        '400':
+          description: Validation failed, or one or more device IDs are invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validationFailed:
+                  value:
+                    error:
+                      code: validation_failed
+                      message: Request validation failed.
+                invalidDevice:
+                  value:
+                    error:
+                      code: invalid_device_reference
+                      message: One or more referenced devices do not exist or are not accessible.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /party-sessions/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdPathParam'
+
+    get:
+      tags: [Party Sessions]
+      summary: Get a single party session
+      responses:
+        '200':
+          description: Session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartySession'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags: [Party Sessions]
+      summary: Update a party session
+      description: |
+        Partial update. Allows changing `name` and `status`. When `status`
+        transitions to `ended`, the backend sets `endedAt` automatically.
+
+        Valid transitions:
+        - `active` → `paused`, `ended`
+        - `paused` → `active`, `ended`
+        - `ended` → (terminal, no transitions allowed)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartySessionUpdateRequest'
+      responses:
+        '200':
+          description: Updated session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartySession'
+        '400':
+          description: Validation failed, or invalid status transition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validationFailed:
+                  value:
+                    error:
+                      code: validation_failed
+                      message: Request validation failed.
+                invalidTransition:
+                  value:
+                    error:
+                      code: invalid_status_transition
+                      message: Cannot transition from ended to active.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [Party Sessions]
+      summary: Delete a party session
+      description: |
+        Hard delete. Cascades to remove junction rows in
+        `party_session_devices`. For "end" semantics, use
+        `PATCH` with `status=ended` instead — delete is for cleanup.
+      responses:
+        '204':
+          description: Deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /party-sessions/{id}/devices:
+    parameters:
+      - $ref: '#/components/parameters/IdPathParam'
+
+    post:
+      tags: [Party Sessions]
+      summary: Add a device to a party session
+      description: |
+        Adds a single device to the session. The device must belong to the
+        current user and not already be in this session. Returns the full
+        updated session so the frontend doesn't need a separate refetch.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartySessionAddDeviceRequest'
+      responses:
+        '201':
+          description: Device added; returns updated session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartySession'
+        '400':
+          description: Validation failed, or invalid device reference
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validationFailed:
+                  value:
+                    error:
+                      code: validation_failed
+                      message: Request validation failed.
+                invalidDevice:
+                  value:
+                    error:
+                      code: invalid_device_reference
+                      message: Referenced device does not exist or is not accessible.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Device is already in this session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: device_already_in_session
+                  message: This device is already part of the session.
+
+  /party-sessions/{id}/devices/{deviceId}:
+    parameters:
+      - $ref: '#/components/parameters/IdPathParam'
+      - in: path
+        name: deviceId
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    delete:
+      tags: [Party Sessions]
+      summary: Remove a device from a party session
+      description: |
+        Returns the full updated session so the frontend doesn't need a
+        separate refetch.
+      responses:
+        '200':
+          description: Device removed; returns updated session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartySession'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ---------------------------------------------------------------------------
+  # Firmware
+  # ---------------------------------------------------------------------------
+
+  /firmware/check:
+    post:
+      tags: [Firmware]
+      summary: Check whether a firmware update is available
+      description: |
+        Registered users only. Compares the supplied `currentVersion` to the
+        latest known version for that device type and returns whether an
+        update is available. No real OTA — the latest version is hardcoded
+        on the backend.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FirmwareCheckRequest'
+      responses:
+        '200':
+          description: Check result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FirmwareCheckResponse'
+        '400':
+          $ref: '#/components/responses/ValidationFailed'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/GuestForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  # ---------------------------------------------------------------------------
+  # Security
+  # ---------------------------------------------------------------------------
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  # ---------------------------------------------------------------------------
+  # Shared parameters
+  # ---------------------------------------------------------------------------
+  parameters:
+    IdPathParam:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  # ---------------------------------------------------------------------------
+  # Shared responses
+  # ---------------------------------------------------------------------------
+  responses:
+    ValidationFailed:
+      description: Request body or query parameters failed validation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: validation_failed
+              message: Request validation failed.
+              details:
+                fields:
+                  email: must be a valid email address
+                  password: must be at least 8 characters
+
+    Unauthorized:
+      description: Missing or invalid authentication token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: unauthorized
+              message: Authentication required.
+
+    GuestForbidden:
+      description: Endpoint requires a registered account
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: guest_endpoint_forbidden
+              message: This endpoint is only available to registered users.
+
+    NotFound:
+      description: Resource not found, or not accessible to the authenticated user
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: not_found
+              message: Resource not found.
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: internal_error
+              message: An unexpected error occurred.
+
+  # ---------------------------------------------------------------------------
+  # Schemas
+  # ---------------------------------------------------------------------------
+  schemas:
+
+    # --- Error envelope ------------------------------------------------------
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              description: Machine-readable error code (snake_case).
+              example: device_not_found
+            message:
+              type: string
+              description: Human-readable error message.
+            details:
+              type: object
+              additionalProperties: true
+              description: |
+                Optional structured details. For validation errors, contains
+                a `fields` object mapping field names to per-field error
+                messages.
+
+    # --- User ----------------------------------------------------------------
+
+    User:
+      type: object
+      required: [id, role, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum: [guest, registered]
+        email:
+          type: [string, "null"]
+          format: email
+          description: Null for guest users.
+        displayName:
+          type: [string, "null"]
+        createdAt:
+          type: string
+          format: date-time
+        convertedAt:
+          type: [string, "null"]
+          format: date-time
+          description: Set when a guest converts to a registered account.
+
+    UserUpdateRequest:
+      type: object
+      properties:
+        displayName:
+          type: string
+
+    # --- Preferences ---------------------------------------------------------
+
+    Preferences:
+      type: object
+      required: [theme, language, notificationsEnabled]
+      properties:
+        theme:
+          type: string
+          enum: [light, dark, system]
+        language:
+          type: string
+          description: ISO 639-1 code.
+          example: en
+        notificationsEnabled:
+          type: boolean
+
+    PreferencesUpdateRequest:
+      type: object
+      properties:
+        theme:
+          type: string
+          enum: [light, dark, system]
+        language:
+          type: string
+        notificationsEnabled:
+          type: boolean
+
+    # --- Auth DTOs -----------------------------------------------------------
+
+    RegisterRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        displayName:
+          type: string
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [user, token]
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        token:
+          type: string
+          description: JWT bearer token. ~30-day expiry, no refresh.
+
+    # --- Device --------------------------------------------------------------
+
+    Device:
+      type: object
+      required:
+        - id
+        - name
+        - deviceType
+        - firmwareVersion
+        - batteryLevel
+        - isConnected
+        - pairedAt
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        deviceType:
+          type: string
+          enum: [vespin_classic, vespin_mini, vespin_pro]
+        firmwareVersion:
+          type: string
+          example: "1.0.0"
+        batteryLevel:
+          type: integer
+          minimum: 0
+          maximum: 100
+        isConnected:
+          type: boolean
+        activeEqProfileId:
+          type: [string, "null"]
+          format: uuid
+        pairedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+
+    DeviceCreateRequest:
+      type: object
+      required: [name, deviceType]
+      properties:
+        name:
+          type: string
+        deviceType:
+          type: string
+          enum: [vespin_classic, vespin_mini, vespin_pro]
+
+    DeviceUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        activeEqProfileId:
+          type: [string, "null"]
+          format: uuid
+
+    # --- EQ Profile ----------------------------------------------------------
+
+    EQBands:
+      type: object
+      required: [subBass, bass, mid, treble, presence]
+      properties:
+        subBass:
+          type: integer
+          minimum: -12
+          maximum: 12
+          description: Sub-bass gain in dB (~60 Hz).
+        bass:
+          type: integer
+          minimum: -12
+          maximum: 12
+          description: Bass gain in dB (~250 Hz).
+        mid:
+          type: integer
+          minimum: -12
+          maximum: 12
+          description: Mid gain in dB (~1 kHz).
+        treble:
+          type: integer
+          minimum: -12
+          maximum: 12
+          description: Treble gain in dB (~4 kHz).
+        presence:
+          type: integer
+          minimum: -12
+          maximum: 12
+          description: Presence gain in dB (~12 kHz).
+
+    EQProfile:
+      type: object
+      required: [id, name, isSystem, bands, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        isSystem:
+          type: boolean
+          description: True for read-only system presets, false for user-created profiles.
+        bands:
+          $ref: '#/components/schemas/EQBands'
+        createdAt:
+          type: string
+          format: date-time
+
+    EQProfileCreateRequest:
+      type: object
+      required: [name, bands]
+      properties:
+        name:
+          type: string
+        bands:
+          $ref: '#/components/schemas/EQBands'
+
+    EQProfileUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        bands:
+          $ref: '#/components/schemas/EQBands'
+
+    EQProfileForkRequest:
+      type: object
+      required: [name, bands]
+      properties:
+        name:
+          type: string
+          description: Name for the new forked profile.
+        bands:
+          $ref: '#/components/schemas/EQBands'
+          description: The modified bands (user's edits to the system preset).
+
+    # --- Party Session -------------------------------------------------------
+
+    PartySession:
+      type: object
+      required: [id, status, startedAt, deviceIds, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: [string, "null"]
+        status:
+          type: string
+          enum: [active, paused, ended]
+        startedAt:
+          type: string
+          format: date-time
+        endedAt:
+          type: [string, "null"]
+          format: date-time
+        deviceIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: IDs of devices currently in the session.
+        createdAt:
+          type: string
+          format: date-time
+
+    PartySessionCreateRequest:
+      type: object
+      required: [deviceIds]
+      properties:
+        name:
+          type: string
+        deviceIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          minItems: 1
+
+    PartySessionUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+          enum: [active, paused, ended]
+
+    PartySessionAddDeviceRequest:
+      type: object
+      required: [deviceId]
+      properties:
+        deviceId:
+          type: string
+          format: uuid
+
+    # --- Firmware ------------------------------------------------------------
+
+    FirmwareCheckRequest:
+      type: object
+      required: [deviceId, currentVersion]
+      properties:
+        deviceId:
+          type: string
+          format: uuid
+        currentVersion:
+          type: string
+          example: "1.0.0"
+
+    FirmwareCheckResponse:
+      type: object
+      required: [latestVersion, updateAvailable]
+      properties:
+        latestVersion:
+          type: string
+          example: "1.0.2"
+        updateAvailable:
+          type: boolean
+        releaseNotes:
+          type: string
+          description: Optional human-readable notes about the latest version.

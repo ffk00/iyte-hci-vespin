@@ -1,0 +1,18 @@
+# Migration image: bundles the migration files into the golang-migrate binary.
+#
+# Built and pushed to ghcr.io/${GHCR_OWNER}/vespin-migrate alongside the API
+# image. Deployed as a one-shot container that runs before the API starts.
+#
+# Build context: backend/  (same as the API Dockerfile)
+# Build command: docker build -f Dockerfile.migrate -t vespin-migrate .
+
+FROM migrate/migrate:v4.17.1
+
+# Bundle migration files into the image so we don't need to mount a volume.
+COPY internal/db/migrations /migrations
+
+# The base image's ENTRYPOINT is ["migrate"]. We override CMD via docker-compose
+# (where ${DATABASE_URL} interpolation works) rather than in the Dockerfile
+# (where exec-form does NOT interpolate shell variables).
+#
+# See docker-compose.prod.yml — the migrate service sets `command:` explicitly.

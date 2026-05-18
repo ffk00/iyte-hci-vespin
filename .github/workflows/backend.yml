@@ -1,0 +1,167 @@
+name: Backend — Build & Deploy
+
+# Triggered on push to main when backend code or deployment config changes.
+# Builds the API image and the migrate image, pushes both to GHCR, then
+# SSHes into the VPS to pull and restart.
+#
+# Manual triggers are allowed via workflow_dispatch (useful for redeploying
+# without a code change, e.g., after editing the Caddyfile).
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'deploy/**'
+      - '.github/workflows/backend.yml'
+  workflow_dispatch:
+
+# Cancel any in-progress run when a new commit lands on the same ref.
+# Prevents wasting CI on stale builds and avoids out-of-order deploys.
+concurrency:
+  group: backend-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_API: ${{ github.repository_owner }}/vespin-api
+  IMAGE_MIGRATE: ${{ github.repository_owner }}/vespin-migrate
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Test: lint + vet + build (no DB-bound tests for HCI scope).
+  # ---------------------------------------------------------------------------
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache-dependency-path: backend/go.sum
+
+      - name: Verify modules
+        run: go mod verify
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: Build (compile check)
+        run: go build -v ./...
+
+  # ---------------------------------------------------------------------------
+  # Build & push both images to GHCR.
+  # ---------------------------------------------------------------------------
+  build-and-push:
+    name: Build & Push Images
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image tag
+        id: meta
+        run: |
+          # Use the commit SHA (short form) as the unique tag.
+          # Also tag as 'latest' for the default deploy.
+          SHA="${GITHUB_SHA::7}"
+          echo "tag=${SHA}" >> "$GITHUB_OUTPUT"
+          echo "Computed tag: ${SHA}"
+
+      - name: Build & push vespin-api
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_API }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_API }}:${{ steps.meta.outputs.tag }}
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,mode=max,scope=api
+          platforms: linux/amd64
+
+      - name: Build & push vespin-migrate
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile.migrate
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_MIGRATE }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_MIGRATE }}:${{ steps.meta.outputs.tag }}
+          cache-from: type=gha,scope=migrate
+          cache-to: type=gha,mode=max,scope=migrate
+          platforms: linux/amd64
+
+  # ---------------------------------------------------------------------------
+  # Deploy: SSH to VPS, pull new images, restart stack.
+  # ---------------------------------------------------------------------------
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    # Only deploy on push (not on pull_request, even if that were to fire here).
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    environment:
+      name: production
+      url: https://${{ vars.PRODUCTION_DOMAIN }}
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
+      - uses: actions/checkout@v4
+
+      - name: Push deploy/ to VPS
+        # rsync the deploy/ directory in case anything changed (Caddyfile,
+        # compose, backup.sh). The .env on the VPS is never overwritten.
+        run: |
+          rsync -avz --delete \
+            --exclude='.env' \
+            -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes" \
+            ./deploy/ \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/deploy/vespin/
+
+      - name: Pull images and restart stack
+        env:
+          IMAGE_TAG: ${{ needs.build-and-push.outputs.image_tag }}
+        run: |
+          ssh -i ~/.ssh/id_ed25519 \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+            "cd /home/deploy/vespin && \
+             export IMAGE_TAG='${IMAGE_TAG}' && \
+             docker compose -f docker-compose.prod.yml --env-file .env pull && \
+             docker compose -f docker-compose.prod.yml --env-file .env up -d --remove-orphans"
+
+      - name: Verify deployment
+        run: |
+          # Wait briefly for Caddy + API to settle, then probe /healthz.
+          # If this fails, the deploy is considered broken — alerts ahead.
+          sleep 10
+          curl --fail --silent --show-error --max-time 30 \
+            "https://${{ vars.PRODUCTION_DOMAIN }}/healthz" \
+            || (echo "Health check failed" && exit 1)
+          echo "Health check passed."

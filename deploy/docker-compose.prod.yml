@@ -1,0 +1,93 @@
+# Production stack, deployed to the Hetzner VPS.
+#
+# This file is invoked from /home/deploy/vespin on the VPS as:
+#   docker compose -f docker-compose.prod.yml --env-file .env up -d
+#
+# It expects:
+#   - .env file in the same directory with secrets (see .env.example)
+#   - GHCR credentials configured (docker login ghcr.io)
+#   - Caddyfile in the same directory
+#   - Migrations available; we mount them from the api image via a sidecar pattern
+#
+# Network topology:
+#   internet → Caddy (:80, :443) → api (:8080)
+#                                ↓
+#                           postgres (:5432, internal only)
+#
+# Caddy is the only service exposed to the host network. The API and Postgres
+# are only reachable inside the Docker network.
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: vespin-caddy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"  # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data        # Let's Encrypt certs, must persist
+      - caddy-config:/config
+    environment:
+      DOMAIN: ${DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  api:
+    image: ghcr.io/${GHCR_OWNER}/vespin-api:${IMAGE_TAG:-latest}
+    container_name: vespin-api
+    environment:
+      APP_ENV: production
+      APP_ADDR: ":8080"
+      DATABASE_URL: postgres://vespin:${POSTGRES_PASSWORD}@postgres:5432/vespin?sslmode=disable
+      JWT_SECRET: ${JWT_SECRET}
+      LOG_LEVEL: info
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    # Not exposed to host — Caddy reaches it via the docker network.
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: vespin-postgres
+    environment:
+      POSTGRES_USER: vespin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: vespin
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./backups:/backups   # nightly pg_dump writes here
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vespin -d vespin"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    # Not exposed to host — only reachable inside the docker network.
+
+  migrate:
+    # One-shot migration runner. Runs before the API starts; exits on success.
+    # On deploy, CI restarts this container to apply any new migrations.
+    image: ghcr.io/${GHCR_OWNER}/vespin-migrate:${IMAGE_TAG:-latest}
+    container_name: vespin-migrate
+    # Compose interpolates ${POSTGRES_PASSWORD} here before passing to the
+    # container (exec-form CMD in the image would not do this interpolation).
+    command:
+      - "-path=/migrations"
+      - "-database=postgres://vespin:${POSTGRES_PASSWORD}@postgres:5432/vespin?sslmode=disable"
+      - "up"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+volumes:
+  postgres-data:
+  caddy-data:
+  caddy-config:

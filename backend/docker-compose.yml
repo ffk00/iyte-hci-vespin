@@ -1,0 +1,66 @@
+# Local development stack.
+#
+# Run with: docker compose up
+# Run migrations manually with: docker compose run --rm migrate
+#
+# The API is exposed on host port 8080 so the React Native app (running in
+# Expo Go on a phone or simulator) can hit http://<your-lan-ip>:8080.
+# Postgres is exposed on 5432 so you can connect with a DB client.
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: vespin-api:dev
+    container_name: vespin-api-dev
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ENV: development
+      APP_ADDR: ":8080"
+      DATABASE_URL: postgres://vespin:vespin@postgres:5432/vespin?sslmode=disable
+      JWT_SECRET: dev-secret-not-for-production
+      LOG_LEVEL: debug
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: vespin-postgres-dev
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: vespin
+      POSTGRES_PASSWORD: vespin
+      POSTGRES_DB: vespin
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vespin -d vespin"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  migrate:
+    # One-shot migration runner. Exits after applying pending migrations.
+    image: migrate/migrate:v4.17.1
+    container_name: vespin-migrate-dev
+    volumes:
+      - ./internal/db/migrations:/migrations:ro
+    command:
+      - "-path=/migrations"
+      - "-database=postgres://vespin:vespin@postgres:5432/vespin?sslmode=disable"
+      - "up"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+volumes:
+  postgres-dev-data:

@@ -1,0 +1,54 @@
+# Caddy configuration for the Vespin Retro Companion API.
+#
+# Caddy automatically obtains and renews Let's Encrypt certificates for the
+# configured domain. The {$DOMAIN} and {$ACME_EMAIL} variables are read from
+# the environment (set in docker-compose.prod.yml).
+#
+# For DuckDNS:
+#   DOMAIN=vespin-api.duckdns.org
+#   ACME_EMAIL=your-email@example.com   (for Let's Encrypt expiry notices)
+#
+# DuckDNS works with Let's Encrypt out of the box; Caddy will solve the
+# HTTP-01 challenge automatically. No DNS provider plugin needed.
+
+{
+    email {$ACME_EMAIL}
+    # Uncomment to use Let's Encrypt staging during testing (avoids rate limits):
+    # acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+}
+
+{$DOMAIN} {
+    # Proxy everything to the Go API container.
+    # `api` resolves via Docker's internal DNS.
+    reverse_proxy api:8080 {
+        # Standard proxy headers — Caddy sets X-Forwarded-* automatically.
+        # The Go API can read r.Header.Get("X-Forwarded-For") if needed.
+        header_up X-Real-IP {remote_host}
+    }
+
+    # Logs to stdout, captured by `docker compose logs caddy`.
+    log {
+        output stdout
+        format json
+        level INFO
+    }
+
+    # Security headers — set sensible defaults.
+    header {
+        # HSTS: 6 months, include subdomains
+        Strict-Transport-Security "max-age=15552000; includeSubDomains"
+        # Disable MIME sniffing
+        X-Content-Type-Options "nosniff"
+        # No referrer leakage
+        Referrer-Policy "no-referrer-when-downgrade"
+        # Remove server identification
+        -Server
+    }
+
+    # Health check endpoint — useful for uptime monitoring.
+    # The Go API should expose GET /healthz returning 200 OK.
+    @healthz path /healthz
+    handle @healthz {
+        reverse_proxy api:8080
+    }
+}

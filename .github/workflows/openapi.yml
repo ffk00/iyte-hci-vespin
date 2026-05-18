@@ -1,0 +1,96 @@
+name: OpenAPI — Validate & Drift Check
+
+# Runs on PRs that touch the OpenAPI spec or the generated frontend code.
+# Two checks:
+#   1. Validate the spec is syntactically valid OpenAPI 3.1.
+#   2. Regenerate the frontend's Orval output and fail if the diff is non-empty.
+#      This prevents "forgot to regenerate" PRs from merging.
+#
+# Also runs on push to main as a safety net.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/api/openapi.yaml'
+      - 'frontend/src/api/generated/**'
+      - 'frontend/orval.config.ts'
+      - '.github/workflows/openapi.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'backend/api/openapi.yaml'
+      - 'frontend/src/api/generated/**'
+      - 'frontend/orval.config.ts'
+      - '.github/workflows/openapi.yml'
+
+concurrency:
+  group: openapi-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Validate the OpenAPI spec syntactically (3.1 compliance).
+  # ---------------------------------------------------------------------------
+  validate:
+    name: Validate spec
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Redocly CLI
+        run: npm install -g @redocly/cli@latest
+
+      - name: Lint OpenAPI spec
+        run: redocly lint backend/api/openapi.yaml
+
+  # ---------------------------------------------------------------------------
+  # Drift check: regenerate Orval output and fail if it differs from committed.
+  # ---------------------------------------------------------------------------
+  drift:
+    name: Orval drift check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('frontend/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Regenerate Orval output
+        run: pnpm orval
+
+      - name: Check for drift
+        run: |
+          if ! git diff --exit-code src/api/generated/; then
+            echo ""
+            echo "::error::Generated API code is out of sync with openapi.yaml."
+            echo "::error::Run 'pnpm orval' locally, commit the regenerated files, and push."
+            exit 1
+          fi
+          echo "Generated code is in sync with the spec."
