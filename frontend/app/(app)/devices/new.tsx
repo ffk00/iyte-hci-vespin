@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 export default function NewDeviceScreen() {
   return (
     <View className="flex-1 items-center justify-center bg-background p-4">
-      <Text className="text-foreground">Pair new device</Text>
+      <Text className="text-ink">Pair new device</Text>
     </View>
   );
 }

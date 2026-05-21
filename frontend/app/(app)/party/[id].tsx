@@ -5,7 +5,7 @@ export default function PartySessionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   return (
     <View className="flex-1 items-center justify-center bg-background p-4">
-      <Text className="text-foreground">Party session {id}</Text>
+      <Text className="text-ink">Party session {id}</Text>
     </View>
   );
 }
