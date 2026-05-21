@@ -1,9 +1,5 @@
-import { Text, View } from "react-native";
+import { RegisterForm } from "@/features/auth/components/RegisterForm";
 
 export default function RegisterScreen() {
-  return (
-    <View className="flex-1 items-center justify-center bg-background p-4">
-      <Text className="text-xl font-semibold text-foreground">Register</Text>
-    </View>
-  );
+  return <RegisterForm />;
 }

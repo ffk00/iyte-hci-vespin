@@ -1,9 +1,5 @@
-import { Text, View } from "react-native";
+import { GuestAccess } from "@/features/auth/components/GuestAccess";
 
 export default function GuestScreen() {
-  return (
-    <View className="flex-1 items-center justify-center bg-background p-4">
-      <Text className="text-xl font-semibold text-foreground">Continue as guest</Text>
-    </View>
-  );
+  return <GuestAccess />;
 }

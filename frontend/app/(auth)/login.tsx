@@ -1,9 +1,5 @@
-import { Text, View } from "react-native";
+import { LoginForm } from "@/features/auth/components/LoginForm";
 
 export default function LoginScreen() {
-  return (
-    <View className="flex-1 items-center justify-center bg-background p-4">
-      <Text className="text-xl font-semibold text-foreground">Login</Text>
-    </View>
-  );
+  return <LoginForm />;
 }
