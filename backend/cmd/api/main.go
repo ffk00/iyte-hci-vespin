@@ -21,6 +21,7 @@ import (
 	"github.com/ffk00/iyte-hci-vespin/backend/internal/partysessions"
 	"github.com/ffk00/iyte-hci-vespin/backend/internal/server"
 	"github.com/ffk00/iyte-hci-vespin/backend/internal/users"
+	"github.com/google/uuid"
 )
 
 func main() {
@@ -52,11 +53,20 @@ func run() error {
 	tokens := auth.NewTokens(cfg.JWTSecret)
 	authMW := auth.Middleware(tokens)
 
+	defaultEQ, err := queries.GetDefaultEQProfile(ctx)
+	if err != nil {
+		return fmt.Errorf("load default eq profile: %w", err)
+	}
+	defaultEQID, err := uuid.FromBytes(defaultEQ.ID.Bytes[:])
+	if err != nil {
+		return fmt.Errorf("decode default eq profile id: %w", err)
+	}
+
 	r := server.NewRouter(server.Deps{
 		AuthMW:          authMW,
 		AuthHandler:     auth.NewHandler(queries, pool, tokens),
 		UserHandler:     users.NewHandler(queries),
-		DeviceHandler:   devices.NewHandler(queries),
+		DeviceHandler:   devices.NewHandler(queries, defaultEQID),
 		EQHandler:       eqprofiles.NewHandler(queries, pool),
 		PartyHandler:    partysessions.NewHandler(queries, pool),
 		FirmwareHandler: firmware.NewHandler(cfg),
