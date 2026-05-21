@@ -1211,6 +1211,7 @@ components:
             type: string
             format: uuid
           minItems: 1
+          maxItems: 20
 
     PartySessionUpdateRequest:
       type: object

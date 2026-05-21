@@ -74,13 +74,22 @@ func (h *Handler) patchMe(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.DisplayName.Null {
+		// Per the OpenAPI contract, displayName is `type: string` — not
+		// nullable. Clearing is done by sending an empty string, not null.
+		httpx.WriteError(w, httpx.NewValidationError(
+			map[string]string{"displayName": "must be a string (use \"\" to clear)"}, nil))
+		return
+	}
+	if len(req.DisplayName.Value) > 100 {
+		httpx.WriteError(w, httpx.NewValidationError(
+			map[string]string{"displayName": "must be at most 100"}, nil))
+		return
+	}
+	// Empty string clears the display name (stored as NULL); any other value
+	// is written as-is.
 	dn := pgtype.Text{Valid: false}
-	if !req.DisplayName.Null {
-		if len(req.DisplayName.Value) > 100 {
-			httpx.WriteError(w, httpx.NewValidationError(
-				map[string]string{"displayName": "must be at most 100"}, nil))
-			return
-		}
+	if req.DisplayName.Value != "" {
 		dn = pgtype.Text{String: req.DisplayName.Value, Valid: true}
 	}
 
