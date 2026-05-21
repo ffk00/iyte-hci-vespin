@@ -1,14 +1,21 @@
 export const fontFamily = {
-  sans: ["System"],
-  mono: ["Menlo", "monospace"],
-};
+  display: ["ZenDots"],
+  body: ["System"],
+} as const;
 
 export const fontSize = {
-  xs: ["12px", { lineHeight: "16px" }],
-  sm: ["14px", { lineHeight: "20px" }],
-  base: ["16px", { lineHeight: "24px" }],
-  lg: ["18px", { lineHeight: "28px" }],
-  xl: ["20px", { lineHeight: "28px" }],
-  "2xl": ["24px", { lineHeight: "32px" }],
-  "3xl": ["30px", { lineHeight: "36px" }],
-};
+  caption: ["13px", { lineHeight: "18px" }],
+  body: ["16px", { lineHeight: "24px" }],
+  title: ["20px", { lineHeight: "28px" }],
+  display: ["40px", { lineHeight: "44px" }],
+} as const;
+
+export const typeScale = {
+  display: { size: 40, lineHeight: 44, weight: "400", family: "display" },
+  button: { size: 16, lineHeight: 20, weight: "400", family: "display" },
+  title: { size: 20, lineHeight: 28, weight: "600", family: "body" },
+  body: { size: 16, lineHeight: 24, weight: "400", family: "body" },
+  caption: { size: 13, lineHeight: 18, weight: "400", family: "body" },
+} as const;
+
+export type TypeVariant = keyof typeof typeScale;
