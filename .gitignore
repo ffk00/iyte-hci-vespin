@@ -22,5 +22,8 @@ dist/
 build/
 *.exe
 
+# air hot-reload build output (backend/Dockerfile.dev)
+backend/tmp/
+
 # Other
 .claude

@@ -1,0 +1,29 @@
+# Local development override.
+#
+# `docker compose` auto-merges this on top of docker-compose.yml. It swaps the
+# production-shaped `api` image for a hot-reloading dev container (air) with the
+# source bind-mounted, so Go edits reload in ~1s with no image rebuild.
+#
+# To run the production-shaped build instead (parity check), bypass the override:
+#   docker compose -f docker-compose.yml up --build
+#
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: vespin-api:dev-air
+    volumes:
+      - .:/src
+      - go-mod-cache:/go/pkg/mod
+      - go-build-cache:/root/.cache/go-build
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+
+volumes:
+  go-mod-cache:
+  go-build-cache:
