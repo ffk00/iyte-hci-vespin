@@ -1,0 +1,24 @@
+# air live-reload config for local development.
+# Used by docker-compose.override.yml via Dockerfile.dev. NOT used in prod.
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go build -o ./tmp/api ./cmd/api"
+  bin = "./tmp/api"
+  include_ext = ["go"]
+  exclude_dir = ["tmp", "api", "internal/db/migrations"]
+  delay = 300
+  stop_on_error = true
+  send_interrupt = true
+  kill_delay = "2s"
+  # Poll instead of fsnotify: file events from a Windows/macOS host bind mount
+  # do not reliably reach the Linux container. Polling is the portable choice.
+  poll = true
+  poll_interval = 500
+
+[log]
+  time = true
+
+[misc]
+  clean_on_exit = true

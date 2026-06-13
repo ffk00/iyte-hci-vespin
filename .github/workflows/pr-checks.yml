@@ -24,6 +24,7 @@ jobs:
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
+      openapi: ${{ steps.filter.outputs.openapi }}
     steps:
       - uses: actions/checkout@v4
 
@@ -36,6 +37,10 @@ jobs:
               - 'deploy/**'
             frontend:
               - 'frontend/**'
+            openapi:
+              - 'backend/api/openapi.yaml'
+              - 'frontend/src/api/generated/**'
+              - 'frontend/orval.config.ts'
 
   # ---------------------------------------------------------------------------
   # Backend: vet, build. Light by design (we agreed to keep tests minimal).
@@ -89,27 +94,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
+      # pnpm must be set up before setup-node so its built-in `cache: pnpm`
+      # can locate the store. This replaces the brittle `pnpm store path` +
+      # actions/cache dance that could yield an empty cache path.
       - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 11.1.2
           run_install: false
 
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-      - name: Cache pnpm store
-        uses: actions/cache@v4
+      - uses: actions/setup-node@v4
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('frontend/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          node-version: '22'
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -119,3 +116,49 @@ jobs:
 
       - name: Lint
         run: pnpm lint
+
+  # ---------------------------------------------------------------------------
+  # OpenAPI: validate the spec and fail if the generated client has drifted.
+  # The spec is the source of truth; generated code must be regenerated and
+  # committed whenever it changes. (Merged in from the former openapi.yml.)
+  # ---------------------------------------------------------------------------
+  openapi:
+    name: OpenAPI checks
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.openapi == 'true'
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Validate spec (OpenAPI 3.1)
+        run: npx @redocly/cli@latest lint ../backend/api/openapi.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Regenerate Orval output
+        run: pnpm orval
+
+      - name: Check for drift
+        run: |
+          if ! git diff --exit-code src/api/generated/; then
+            echo ""
+            echo "::error::Generated API code is out of sync with openapi.yaml."
+            echo "::error::Run 'pnpm orval' locally, commit the regenerated files, and push."
+            exit 1
+          fi
+          echo "Generated code is in sync with the spec."

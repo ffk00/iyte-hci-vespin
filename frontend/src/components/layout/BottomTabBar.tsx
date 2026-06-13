@@ -1,6 +1,7 @@
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon, type IconName } from "@/components/ui/Icon";
+import { SurfaceProvider } from "@/providers/SurfaceProvider";
 
 type TabRoute = { key: string; name: string };
 type TabNavigation = {
@@ -15,7 +16,6 @@ type BottomTabBarProps = {
   state: { index: number; routes: TabRoute[] };
   navigation: TabNavigation;
 };
-import { SurfaceProvider } from "@/providers/SurfaceProvider";
 
 const ROUTE_ICON: Record<string, { active: IconName; inactive: IconName; label: string }> = {
   devices: { active: "home", inactive: "home-outline", label: "Home" },

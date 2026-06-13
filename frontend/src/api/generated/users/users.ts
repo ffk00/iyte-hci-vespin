@@ -51,6 +51,8 @@ import type {
 import { vespinFetch } from '../../client';
 
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
 
 
 export type getUsersMeResponse200 = {
@@ -105,16 +107,16 @@ export const getGetUsersMeQueryKey = () => {
     }
 
 
-export const getGetUsersMeQueryOptions = <TData = Awaited<ReturnType<typeof getUsersMe>>, TError = UnauthorizedResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersMe>>, TError, TData>>, }
+export const getGetUsersMeQueryOptions = <TData = Awaited<ReturnType<typeof getUsersMe>>, TError = UnauthorizedResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersMe>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetUsersMeQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUsersMe>>> = ({ signal }) => getUsersMe({ signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUsersMe>>> = ({ signal }) => getUsersMe({ signal, ...requestOptions });
 
 
 
@@ -134,7 +136,7 @@ export function useGetUsersMe<TData = Awaited<ReturnType<typeof getUsersMe>>, TE
           TError,
           Awaited<ReturnType<typeof getUsersMe>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetUsersMe<TData = Awaited<ReturnType<typeof getUsersMe>>, TError = UnauthorizedResponse>(
@@ -144,11 +146,11 @@ export function useGetUsersMe<TData = Awaited<ReturnType<typeof getUsersMe>>, TE
           TError,
           Awaited<ReturnType<typeof getUsersMe>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetUsersMe<TData = Awaited<ReturnType<typeof getUsersMe>>, TError = UnauthorizedResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersMe>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersMe>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -156,7 +158,7 @@ export function useGetUsersMe<TData = Awaited<ReturnType<typeof getUsersMe>>, TE
  */
 
 export function useGetUsersMe<TData = Awaited<ReturnType<typeof getUsersMe>>, TError = UnauthorizedResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersMe>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersMe>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -233,16 +235,16 @@ export const getPatchUsersMeQueryKey = (userUpdateRequest?: UserUpdateRequest,) 
     }
 
 
-export const getPatchUsersMeQueryOptions = <TData = Awaited<ReturnType<typeof patchUsersMe>>, TError = ValidationFailedResponse | UnauthorizedResponse>(userUpdateRequest: UserUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchUsersMe>>, TError, TData>>, }
+export const getPatchUsersMeQueryOptions = <TData = Awaited<ReturnType<typeof patchUsersMe>>, TError = ValidationFailedResponse | UnauthorizedResponse>(userUpdateRequest: UserUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchUsersMe>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPatchUsersMeQueryKey(userUpdateRequest);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof patchUsersMe>>> = ({ signal }) => patchUsersMe(userUpdateRequest, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof patchUsersMe>>> = ({ signal }) => patchUsersMe(userUpdateRequest, { signal, ...requestOptions });
 
 
 
@@ -262,7 +264,7 @@ export function usePatchUsersMe<TData = Awaited<ReturnType<typeof patchUsersMe>>
           TError,
           Awaited<ReturnType<typeof patchUsersMe>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePatchUsersMe<TData = Awaited<ReturnType<typeof patchUsersMe>>, TError = ValidationFailedResponse | UnauthorizedResponse>(
@@ -272,11 +274,11 @@ export function usePatchUsersMe<TData = Awaited<ReturnType<typeof patchUsersMe>>
           TError,
           Awaited<ReturnType<typeof patchUsersMe>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePatchUsersMe<TData = Awaited<ReturnType<typeof patchUsersMe>>, TError = ValidationFailedResponse | UnauthorizedResponse>(
- userUpdateRequest: UserUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchUsersMe>>, TError, TData>>, }
+ userUpdateRequest: UserUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchUsersMe>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -284,7 +286,7 @@ export function usePatchUsersMe<TData = Awaited<ReturnType<typeof patchUsersMe>>
  */
 
 export function usePatchUsersMe<TData = Awaited<ReturnType<typeof patchUsersMe>>, TError = ValidationFailedResponse | UnauthorizedResponse>(
- userUpdateRequest: UserUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchUsersMe>>, TError, TData>>, }
+ userUpdateRequest: UserUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchUsersMe>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -360,16 +362,16 @@ export const getGetUsersMePreferencesQueryKey = () => {
     }
 
 
-export const getGetUsersMePreferencesQueryOptions = <TData = Awaited<ReturnType<typeof getUsersMePreferences>>, TError = UnauthorizedResponse | GuestForbiddenResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersMePreferences>>, TError, TData>>, }
+export const getGetUsersMePreferencesQueryOptions = <TData = Awaited<ReturnType<typeof getUsersMePreferences>>, TError = UnauthorizedResponse | GuestForbiddenResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersMePreferences>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetUsersMePreferencesQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUsersMePreferences>>> = ({ signal }) => getUsersMePreferences({ signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUsersMePreferences>>> = ({ signal }) => getUsersMePreferences({ signal, ...requestOptions });
 
 
 
@@ -389,7 +391,7 @@ export function useGetUsersMePreferences<TData = Awaited<ReturnType<typeof getUs
           TError,
           Awaited<ReturnType<typeof getUsersMePreferences>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetUsersMePreferences<TData = Awaited<ReturnType<typeof getUsersMePreferences>>, TError = UnauthorizedResponse | GuestForbiddenResponse>(
@@ -399,11 +401,11 @@ export function useGetUsersMePreferences<TData = Awaited<ReturnType<typeof getUs
           TError,
           Awaited<ReturnType<typeof getUsersMePreferences>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetUsersMePreferences<TData = Awaited<ReturnType<typeof getUsersMePreferences>>, TError = UnauthorizedResponse | GuestForbiddenResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersMePreferences>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersMePreferences>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -411,7 +413,7 @@ export function useGetUsersMePreferences<TData = Awaited<ReturnType<typeof getUs
  */
 
 export function useGetUsersMePreferences<TData = Awaited<ReturnType<typeof getUsersMePreferences>>, TError = UnauthorizedResponse | GuestForbiddenResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersMePreferences>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersMePreferences>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -493,16 +495,16 @@ export const getPatchUsersMePreferencesQueryKey = (preferencesUpdateRequest?: Pr
     }
 
 
-export const getPatchUsersMePreferencesQueryOptions = <TData = Awaited<ReturnType<typeof patchUsersMePreferences>>, TError = ValidationFailedResponse | UnauthorizedResponse | GuestForbiddenResponse>(preferencesUpdateRequest: PreferencesUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchUsersMePreferences>>, TError, TData>>, }
+export const getPatchUsersMePreferencesQueryOptions = <TData = Awaited<ReturnType<typeof patchUsersMePreferences>>, TError = ValidationFailedResponse | UnauthorizedResponse | GuestForbiddenResponse>(preferencesUpdateRequest: PreferencesUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchUsersMePreferences>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPatchUsersMePreferencesQueryKey(preferencesUpdateRequest);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof patchUsersMePreferences>>> = ({ signal }) => patchUsersMePreferences(preferencesUpdateRequest, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof patchUsersMePreferences>>> = ({ signal }) => patchUsersMePreferences(preferencesUpdateRequest, { signal, ...requestOptions });
 
 
 
@@ -522,7 +524,7 @@ export function usePatchUsersMePreferences<TData = Awaited<ReturnType<typeof pat
           TError,
           Awaited<ReturnType<typeof patchUsersMePreferences>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePatchUsersMePreferences<TData = Awaited<ReturnType<typeof patchUsersMePreferences>>, TError = ValidationFailedResponse | UnauthorizedResponse | GuestForbiddenResponse>(
@@ -532,11 +534,11 @@ export function usePatchUsersMePreferences<TData = Awaited<ReturnType<typeof pat
           TError,
           Awaited<ReturnType<typeof patchUsersMePreferences>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePatchUsersMePreferences<TData = Awaited<ReturnType<typeof patchUsersMePreferences>>, TError = ValidationFailedResponse | UnauthorizedResponse | GuestForbiddenResponse>(
- preferencesUpdateRequest: PreferencesUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchUsersMePreferences>>, TError, TData>>, }
+ preferencesUpdateRequest: PreferencesUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchUsersMePreferences>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -544,7 +546,7 @@ export function usePatchUsersMePreferences<TData = Awaited<ReturnType<typeof pat
  */
 
 export function usePatchUsersMePreferences<TData = Awaited<ReturnType<typeof patchUsersMePreferences>>, TError = ValidationFailedResponse | UnauthorizedResponse | GuestForbiddenResponse>(
- preferencesUpdateRequest: PreferencesUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchUsersMePreferences>>, TError, TData>>, }
+ preferencesUpdateRequest: PreferencesUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchUsersMePreferences>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

@@ -1,0 +1,22 @@
+# syntax=docker/dockerfile:1.7
+#
+# Development-only image: hot-reloads the API with `air` on source changes.
+# Wired in by docker-compose.override.yml. Production uses the multi-stage
+# `Dockerfile` (distroless), never this one.
+FROM golang:1.23-alpine
+
+RUN apk add --no-cache git wget
+
+# air: live-reload for Go. Pinned to the maintained air-verse fork.
+RUN go install github.com/air-verse/air@v1.61.7
+
+WORKDIR /src
+
+# Pre-warm the module cache. At runtime the source tree is bind-mounted over
+# /src and the module/build caches live in named volumes (see the override).
+COPY go.mod go.sum ./
+RUN go mod download
+
+EXPOSE 8080
+
+CMD ["air", "-c", ".air.toml"]

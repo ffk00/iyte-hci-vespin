@@ -1,0 +1,10 @@
+# Keep the production build context lean and deterministic. Dev-only files and
+# air's build output must never leak into the distroless image.
+tmp/
+*.log
+.air.toml
+Dockerfile.dev
+docker-compose.yml
+docker-compose.override.yml
+Makefile
+.dockerignore

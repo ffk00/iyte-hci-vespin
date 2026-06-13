@@ -7,8 +7,8 @@ import (
 )
 
 type RegisterRequest struct {
-	Email       string                  `json:"email"       validate:"required,email,max=254"`
-	Password    string                  `json:"password"    validate:"required,min=8,max=72"`
+	Email       string                 `json:"email"       validate:"required,email,max=254"`
+	Password    string                 `json:"password"    validate:"required,min=8,max=72"`
 	DisplayName httpx.Optional[string] `json:"displayName"`
 }
 

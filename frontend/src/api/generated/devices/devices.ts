@@ -52,6 +52,8 @@ import type {
 import { vespinFetch } from '../../client';
 
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
 
 
 export type getDevicesResponse200 = {
@@ -106,16 +108,16 @@ export const getGetDevicesQueryKey = () => {
     }
 
 
-export const getGetDevicesQueryOptions = <TData = Awaited<ReturnType<typeof getDevices>>, TError = UnauthorizedResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDevices>>, TError, TData>>, }
+export const getGetDevicesQueryOptions = <TData = Awaited<ReturnType<typeof getDevices>>, TError = UnauthorizedResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDevices>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetDevicesQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDevices>>> = ({ signal }) => getDevices({ signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDevices>>> = ({ signal }) => getDevices({ signal, ...requestOptions });
 
 
 
@@ -135,7 +137,7 @@ export function useGetDevices<TData = Awaited<ReturnType<typeof getDevices>>, TE
           TError,
           Awaited<ReturnType<typeof getDevices>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetDevices<TData = Awaited<ReturnType<typeof getDevices>>, TError = UnauthorizedResponse>(
@@ -145,11 +147,11 @@ export function useGetDevices<TData = Awaited<ReturnType<typeof getDevices>>, TE
           TError,
           Awaited<ReturnType<typeof getDevices>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetDevices<TData = Awaited<ReturnType<typeof getDevices>>, TError = UnauthorizedResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDevices>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDevices>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -157,7 +159,7 @@ export function useGetDevices<TData = Awaited<ReturnType<typeof getDevices>>, TE
  */
 
 export function useGetDevices<TData = Awaited<ReturnType<typeof getDevices>>, TError = UnauthorizedResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDevices>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDevices>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -239,16 +241,16 @@ export const getPostDevicesQueryKey = (deviceCreateRequest?: DeviceCreateRequest
     }
 
 
-export const getPostDevicesQueryOptions = <TData = Awaited<ReturnType<typeof postDevices>>, TError = ValidationFailedResponse | UnauthorizedResponse | InternalErrorResponse>(deviceCreateRequest: DeviceCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postDevices>>, TError, TData>>, }
+export const getPostDevicesQueryOptions = <TData = Awaited<ReturnType<typeof postDevices>>, TError = ValidationFailedResponse | UnauthorizedResponse | InternalErrorResponse>(deviceCreateRequest: DeviceCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postDevices>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPostDevicesQueryKey(deviceCreateRequest);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof postDevices>>> = ({ signal }) => postDevices(deviceCreateRequest, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof postDevices>>> = ({ signal }) => postDevices(deviceCreateRequest, { signal, ...requestOptions });
 
 
 
@@ -268,7 +270,7 @@ export function usePostDevices<TData = Awaited<ReturnType<typeof postDevices>>, 
           TError,
           Awaited<ReturnType<typeof postDevices>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostDevices<TData = Awaited<ReturnType<typeof postDevices>>, TError = ValidationFailedResponse | UnauthorizedResponse | InternalErrorResponse>(
@@ -278,11 +280,11 @@ export function usePostDevices<TData = Awaited<ReturnType<typeof postDevices>>, 
           TError,
           Awaited<ReturnType<typeof postDevices>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostDevices<TData = Awaited<ReturnType<typeof postDevices>>, TError = ValidationFailedResponse | UnauthorizedResponse | InternalErrorResponse>(
- deviceCreateRequest: DeviceCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postDevices>>, TError, TData>>, }
+ deviceCreateRequest: DeviceCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postDevices>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -290,7 +292,7 @@ export function usePostDevices<TData = Awaited<ReturnType<typeof postDevices>>, 
  */
 
 export function usePostDevices<TData = Awaited<ReturnType<typeof postDevices>>, TError = ValidationFailedResponse | UnauthorizedResponse | InternalErrorResponse>(
- deviceCreateRequest: DeviceCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postDevices>>, TError, TData>>, }
+ deviceCreateRequest: DeviceCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postDevices>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -363,16 +365,16 @@ export const getGetDevicesIdQueryKey = (id: string,) => {
     }
 
 
-export const getGetDevicesIdQueryOptions = <TData = Awaited<ReturnType<typeof getDevicesId>>, TError = UnauthorizedResponse | NotFoundResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDevicesId>>, TError, TData>>, }
+export const getGetDevicesIdQueryOptions = <TData = Awaited<ReturnType<typeof getDevicesId>>, TError = UnauthorizedResponse | NotFoundResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDevicesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetDevicesIdQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDevicesId>>> = ({ signal }) => getDevicesId(id, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDevicesId>>> = ({ signal }) => getDevicesId(id, { signal, ...requestOptions });
 
 
 
@@ -392,7 +394,7 @@ export function useGetDevicesId<TData = Awaited<ReturnType<typeof getDevicesId>>
           TError,
           Awaited<ReturnType<typeof getDevicesId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetDevicesId<TData = Awaited<ReturnType<typeof getDevicesId>>, TError = UnauthorizedResponse | NotFoundResponse>(
@@ -402,11 +404,11 @@ export function useGetDevicesId<TData = Awaited<ReturnType<typeof getDevicesId>>
           TError,
           Awaited<ReturnType<typeof getDevicesId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetDevicesId<TData = Awaited<ReturnType<typeof getDevicesId>>, TError = UnauthorizedResponse | NotFoundResponse>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDevicesId>>, TError, TData>>, }
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDevicesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -414,7 +416,7 @@ export function useGetDevicesId<TData = Awaited<ReturnType<typeof getDevicesId>>
  */
 
 export function useGetDevicesId<TData = Awaited<ReturnType<typeof getDevicesId>>, TError = UnauthorizedResponse | NotFoundResponse>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDevicesId>>, TError, TData>>, }
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDevicesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -499,16 +501,16 @@ export const getPatchDevicesIdQueryKey = (id: string,
 
 
 export const getPatchDevicesIdQueryOptions = <TData = Awaited<ReturnType<typeof patchDevicesId>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(id: string,
-    deviceUpdateRequest: DeviceUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchDevicesId>>, TError, TData>>, }
+    deviceUpdateRequest: DeviceUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchDevicesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPatchDevicesIdQueryKey(id,deviceUpdateRequest);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof patchDevicesId>>> = ({ signal }) => patchDevicesId(id,deviceUpdateRequest, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof patchDevicesId>>> = ({ signal }) => patchDevicesId(id,deviceUpdateRequest, { signal, ...requestOptions });
 
 
 
@@ -529,7 +531,7 @@ export function usePatchDevicesId<TData = Awaited<ReturnType<typeof patchDevices
           TError,
           Awaited<ReturnType<typeof patchDevicesId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePatchDevicesId<TData = Awaited<ReturnType<typeof patchDevicesId>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(
@@ -540,12 +542,12 @@ export function usePatchDevicesId<TData = Awaited<ReturnType<typeof patchDevices
           TError,
           Awaited<ReturnType<typeof patchDevicesId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePatchDevicesId<TData = Awaited<ReturnType<typeof patchDevicesId>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(
  id: string,
-    deviceUpdateRequest: DeviceUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchDevicesId>>, TError, TData>>, }
+    deviceUpdateRequest: DeviceUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchDevicesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -554,7 +556,7 @@ export function usePatchDevicesId<TData = Awaited<ReturnType<typeof patchDevices
 
 export function usePatchDevicesId<TData = Awaited<ReturnType<typeof patchDevicesId>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(
  id: string,
-    deviceUpdateRequest: DeviceUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchDevicesId>>, TError, TData>>, }
+    deviceUpdateRequest: DeviceUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchDevicesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -630,16 +632,16 @@ export const getDeleteDevicesIdQueryKey = (id: string,) => {
     }
 
 
-export const getDeleteDevicesIdQueryOptions = <TData = Awaited<ReturnType<typeof deleteDevicesId>>, TError = UnauthorizedResponse | NotFoundResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteDevicesId>>, TError, TData>>, }
+export const getDeleteDevicesIdQueryOptions = <TData = Awaited<ReturnType<typeof deleteDevicesId>>, TError = UnauthorizedResponse | NotFoundResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteDevicesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getDeleteDevicesIdQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof deleteDevicesId>>> = ({ signal }) => deleteDevicesId(id, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof deleteDevicesId>>> = ({ signal }) => deleteDevicesId(id, { signal, ...requestOptions });
 
 
 
@@ -659,7 +661,7 @@ export function useDeleteDevicesId<TData = Awaited<ReturnType<typeof deleteDevic
           TError,
           Awaited<ReturnType<typeof deleteDevicesId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useDeleteDevicesId<TData = Awaited<ReturnType<typeof deleteDevicesId>>, TError = UnauthorizedResponse | NotFoundResponse>(
@@ -669,11 +671,11 @@ export function useDeleteDevicesId<TData = Awaited<ReturnType<typeof deleteDevic
           TError,
           Awaited<ReturnType<typeof deleteDevicesId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useDeleteDevicesId<TData = Awaited<ReturnType<typeof deleteDevicesId>>, TError = UnauthorizedResponse | NotFoundResponse>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteDevicesId>>, TError, TData>>, }
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteDevicesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -681,7 +683,7 @@ export function useDeleteDevicesId<TData = Awaited<ReturnType<typeof deleteDevic
  */
 
 export function useDeleteDevicesId<TData = Awaited<ReturnType<typeof deleteDevicesId>>, TError = UnauthorizedResponse | NotFoundResponse>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteDevicesId>>, TError, TData>>, }
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteDevicesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

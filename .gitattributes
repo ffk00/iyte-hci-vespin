@@ -1,0 +1,6 @@
+# Keep LF on files that break with CRLF: shell-script shebangs on Unix/in Linux
+# containers (dev.sh, deploy/backup.sh) and Make recipes (GNU make mishandles the
+# trailing CR). Scoped narrowly on purpose: no blanket `* text=auto`, to avoid
+# renormalizing unrelated files.
+*.sh     text eol=lf
+Makefile text eol=lf

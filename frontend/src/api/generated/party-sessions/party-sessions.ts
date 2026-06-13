@@ -53,6 +53,8 @@ import type {
 import { vespinFetch } from '../../client';
 
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
 
 
 export type getPartySessionsResponse200 = {
@@ -120,16 +122,16 @@ export const getGetPartySessionsQueryKey = (params?: GetPartySessionsParams,) =>
     }
 
 
-export const getGetPartySessionsQueryOptions = <TData = Awaited<ReturnType<typeof getPartySessions>>, TError = ValidationFailedResponse | UnauthorizedResponse>(params?: GetPartySessionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPartySessions>>, TError, TData>>, }
+export const getGetPartySessionsQueryOptions = <TData = Awaited<ReturnType<typeof getPartySessions>>, TError = ValidationFailedResponse | UnauthorizedResponse>(params?: GetPartySessionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPartySessions>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetPartySessionsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPartySessions>>> = ({ signal }) => getPartySessions(params, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPartySessions>>> = ({ signal }) => getPartySessions(params, { signal, ...requestOptions });
 
 
 
@@ -149,7 +151,7 @@ export function useGetPartySessions<TData = Awaited<ReturnType<typeof getPartySe
           TError,
           Awaited<ReturnType<typeof getPartySessions>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetPartySessions<TData = Awaited<ReturnType<typeof getPartySessions>>, TError = ValidationFailedResponse | UnauthorizedResponse>(
@@ -159,11 +161,11 @@ export function useGetPartySessions<TData = Awaited<ReturnType<typeof getPartySe
           TError,
           Awaited<ReturnType<typeof getPartySessions>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetPartySessions<TData = Awaited<ReturnType<typeof getPartySessions>>, TError = ValidationFailedResponse | UnauthorizedResponse>(
- params?: GetPartySessionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPartySessions>>, TError, TData>>, }
+ params?: GetPartySessionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPartySessions>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -171,7 +173,7 @@ export function useGetPartySessions<TData = Awaited<ReturnType<typeof getPartySe
  */
 
 export function useGetPartySessions<TData = Awaited<ReturnType<typeof getPartySessions>>, TError = ValidationFailedResponse | UnauthorizedResponse>(
- params?: GetPartySessionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPartySessions>>, TError, TData>>, }
+ params?: GetPartySessionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPartySessions>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -248,16 +250,16 @@ export const getPostPartySessionsQueryKey = (partySessionCreateRequest?: PartySe
     }
 
 
-export const getPostPartySessionsQueryOptions = <TData = Awaited<ReturnType<typeof postPartySessions>>, TError = ErrorResponse | UnauthorizedResponse>(partySessionCreateRequest: PartySessionCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postPartySessions>>, TError, TData>>, }
+export const getPostPartySessionsQueryOptions = <TData = Awaited<ReturnType<typeof postPartySessions>>, TError = ErrorResponse | UnauthorizedResponse>(partySessionCreateRequest: PartySessionCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postPartySessions>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPostPartySessionsQueryKey(partySessionCreateRequest);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof postPartySessions>>> = ({ signal }) => postPartySessions(partySessionCreateRequest, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof postPartySessions>>> = ({ signal }) => postPartySessions(partySessionCreateRequest, { signal, ...requestOptions });
 
 
 
@@ -277,7 +279,7 @@ export function usePostPartySessions<TData = Awaited<ReturnType<typeof postParty
           TError,
           Awaited<ReturnType<typeof postPartySessions>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostPartySessions<TData = Awaited<ReturnType<typeof postPartySessions>>, TError = ErrorResponse | UnauthorizedResponse>(
@@ -287,11 +289,11 @@ export function usePostPartySessions<TData = Awaited<ReturnType<typeof postParty
           TError,
           Awaited<ReturnType<typeof postPartySessions>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostPartySessions<TData = Awaited<ReturnType<typeof postPartySessions>>, TError = ErrorResponse | UnauthorizedResponse>(
- partySessionCreateRequest: PartySessionCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postPartySessions>>, TError, TData>>, }
+ partySessionCreateRequest: PartySessionCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postPartySessions>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -299,7 +301,7 @@ export function usePostPartySessions<TData = Awaited<ReturnType<typeof postParty
  */
 
 export function usePostPartySessions<TData = Awaited<ReturnType<typeof postPartySessions>>, TError = ErrorResponse | UnauthorizedResponse>(
- partySessionCreateRequest: PartySessionCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postPartySessions>>, TError, TData>>, }
+ partySessionCreateRequest: PartySessionCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postPartySessions>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -372,16 +374,16 @@ export const getGetPartySessionsIdQueryKey = (id: string,) => {
     }
 
 
-export const getGetPartySessionsIdQueryOptions = <TData = Awaited<ReturnType<typeof getPartySessionsId>>, TError = UnauthorizedResponse | NotFoundResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPartySessionsId>>, TError, TData>>, }
+export const getGetPartySessionsIdQueryOptions = <TData = Awaited<ReturnType<typeof getPartySessionsId>>, TError = UnauthorizedResponse | NotFoundResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPartySessionsId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetPartySessionsIdQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPartySessionsId>>> = ({ signal }) => getPartySessionsId(id, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPartySessionsId>>> = ({ signal }) => getPartySessionsId(id, { signal, ...requestOptions });
 
 
 
@@ -401,7 +403,7 @@ export function useGetPartySessionsId<TData = Awaited<ReturnType<typeof getParty
           TError,
           Awaited<ReturnType<typeof getPartySessionsId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetPartySessionsId<TData = Awaited<ReturnType<typeof getPartySessionsId>>, TError = UnauthorizedResponse | NotFoundResponse>(
@@ -411,11 +413,11 @@ export function useGetPartySessionsId<TData = Awaited<ReturnType<typeof getParty
           TError,
           Awaited<ReturnType<typeof getPartySessionsId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetPartySessionsId<TData = Awaited<ReturnType<typeof getPartySessionsId>>, TError = UnauthorizedResponse | NotFoundResponse>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPartySessionsId>>, TError, TData>>, }
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPartySessionsId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -423,7 +425,7 @@ export function useGetPartySessionsId<TData = Awaited<ReturnType<typeof getParty
  */
 
 export function useGetPartySessionsId<TData = Awaited<ReturnType<typeof getPartySessionsId>>, TError = UnauthorizedResponse | NotFoundResponse>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPartySessionsId>>, TError, TData>>, }
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPartySessionsId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -512,16 +514,16 @@ export const getPatchPartySessionsIdQueryKey = (id: string,
 
 
 export const getPatchPartySessionsIdQueryOptions = <TData = Awaited<ReturnType<typeof patchPartySessionsId>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(id: string,
-    partySessionUpdateRequest: PartySessionUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchPartySessionsId>>, TError, TData>>, }
+    partySessionUpdateRequest: PartySessionUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchPartySessionsId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPatchPartySessionsIdQueryKey(id,partySessionUpdateRequest);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof patchPartySessionsId>>> = ({ signal }) => patchPartySessionsId(id,partySessionUpdateRequest, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof patchPartySessionsId>>> = ({ signal }) => patchPartySessionsId(id,partySessionUpdateRequest, { signal, ...requestOptions });
 
 
 
@@ -542,7 +544,7 @@ export function usePatchPartySessionsId<TData = Awaited<ReturnType<typeof patchP
           TError,
           Awaited<ReturnType<typeof patchPartySessionsId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePatchPartySessionsId<TData = Awaited<ReturnType<typeof patchPartySessionsId>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(
@@ -553,12 +555,12 @@ export function usePatchPartySessionsId<TData = Awaited<ReturnType<typeof patchP
           TError,
           Awaited<ReturnType<typeof patchPartySessionsId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePatchPartySessionsId<TData = Awaited<ReturnType<typeof patchPartySessionsId>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(
  id: string,
-    partySessionUpdateRequest: PartySessionUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchPartySessionsId>>, TError, TData>>, }
+    partySessionUpdateRequest: PartySessionUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchPartySessionsId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -567,7 +569,7 @@ export function usePatchPartySessionsId<TData = Awaited<ReturnType<typeof patchP
 
 export function usePatchPartySessionsId<TData = Awaited<ReturnType<typeof patchPartySessionsId>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(
  id: string,
-    partySessionUpdateRequest: PartySessionUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchPartySessionsId>>, TError, TData>>, }
+    partySessionUpdateRequest: PartySessionUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchPartySessionsId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -644,16 +646,16 @@ export const getDeletePartySessionsIdQueryKey = (id: string,) => {
     }
 
 
-export const getDeletePartySessionsIdQueryOptions = <TData = Awaited<ReturnType<typeof deletePartySessionsId>>, TError = UnauthorizedResponse | NotFoundResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deletePartySessionsId>>, TError, TData>>, }
+export const getDeletePartySessionsIdQueryOptions = <TData = Awaited<ReturnType<typeof deletePartySessionsId>>, TError = UnauthorizedResponse | NotFoundResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deletePartySessionsId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getDeletePartySessionsIdQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof deletePartySessionsId>>> = ({ signal }) => deletePartySessionsId(id, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof deletePartySessionsId>>> = ({ signal }) => deletePartySessionsId(id, { signal, ...requestOptions });
 
 
 
@@ -673,7 +675,7 @@ export function useDeletePartySessionsId<TData = Awaited<ReturnType<typeof delet
           TError,
           Awaited<ReturnType<typeof deletePartySessionsId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useDeletePartySessionsId<TData = Awaited<ReturnType<typeof deletePartySessionsId>>, TError = UnauthorizedResponse | NotFoundResponse>(
@@ -683,11 +685,11 @@ export function useDeletePartySessionsId<TData = Awaited<ReturnType<typeof delet
           TError,
           Awaited<ReturnType<typeof deletePartySessionsId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useDeletePartySessionsId<TData = Awaited<ReturnType<typeof deletePartySessionsId>>, TError = UnauthorizedResponse | NotFoundResponse>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deletePartySessionsId>>, TError, TData>>, }
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deletePartySessionsId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -695,7 +697,7 @@ export function useDeletePartySessionsId<TData = Awaited<ReturnType<typeof delet
  */
 
 export function useDeletePartySessionsId<TData = Awaited<ReturnType<typeof deletePartySessionsId>>, TError = UnauthorizedResponse | NotFoundResponse>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deletePartySessionsId>>, TError, TData>>, }
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deletePartySessionsId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -785,16 +787,16 @@ export const getPostPartySessionsIdDevicesQueryKey = (id: string,
 
 
 export const getPostPartySessionsIdDevicesQueryOptions = <TData = Awaited<ReturnType<typeof postPartySessionsIdDevices>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(id: string,
-    partySessionAddDeviceRequest: PartySessionAddDeviceRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postPartySessionsIdDevices>>, TError, TData>>, }
+    partySessionAddDeviceRequest: PartySessionAddDeviceRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postPartySessionsIdDevices>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPostPartySessionsIdDevicesQueryKey(id,partySessionAddDeviceRequest);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof postPartySessionsIdDevices>>> = ({ signal }) => postPartySessionsIdDevices(id,partySessionAddDeviceRequest, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof postPartySessionsIdDevices>>> = ({ signal }) => postPartySessionsIdDevices(id,partySessionAddDeviceRequest, { signal, ...requestOptions });
 
 
 
@@ -815,7 +817,7 @@ export function usePostPartySessionsIdDevices<TData = Awaited<ReturnType<typeof 
           TError,
           Awaited<ReturnType<typeof postPartySessionsIdDevices>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostPartySessionsIdDevices<TData = Awaited<ReturnType<typeof postPartySessionsIdDevices>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(
@@ -826,12 +828,12 @@ export function usePostPartySessionsIdDevices<TData = Awaited<ReturnType<typeof 
           TError,
           Awaited<ReturnType<typeof postPartySessionsIdDevices>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostPartySessionsIdDevices<TData = Awaited<ReturnType<typeof postPartySessionsIdDevices>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(
  id: string,
-    partySessionAddDeviceRequest: PartySessionAddDeviceRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postPartySessionsIdDevices>>, TError, TData>>, }
+    partySessionAddDeviceRequest: PartySessionAddDeviceRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postPartySessionsIdDevices>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -840,7 +842,7 @@ export function usePostPartySessionsIdDevices<TData = Awaited<ReturnType<typeof 
 
 export function usePostPartySessionsIdDevices<TData = Awaited<ReturnType<typeof postPartySessionsIdDevices>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(
  id: string,
-    partySessionAddDeviceRequest: PartySessionAddDeviceRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postPartySessionsIdDevices>>, TError, TData>>, }
+    partySessionAddDeviceRequest: PartySessionAddDeviceRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postPartySessionsIdDevices>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -920,16 +922,16 @@ export const getDeletePartySessionsIdDevicesDeviceIdQueryKey = (id: string,
 
 
 export const getDeletePartySessionsIdDevicesDeviceIdQueryOptions = <TData = Awaited<ReturnType<typeof deletePartySessionsIdDevicesDeviceId>>, TError = UnauthorizedResponse | NotFoundResponse>(id: string,
-    deviceId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deletePartySessionsIdDevicesDeviceId>>, TError, TData>>, }
+    deviceId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deletePartySessionsIdDevicesDeviceId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getDeletePartySessionsIdDevicesDeviceIdQueryKey(id,deviceId);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof deletePartySessionsIdDevicesDeviceId>>> = ({ signal }) => deletePartySessionsIdDevicesDeviceId(id,deviceId, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof deletePartySessionsIdDevicesDeviceId>>> = ({ signal }) => deletePartySessionsIdDevicesDeviceId(id,deviceId, { signal, ...requestOptions });
 
 
 
@@ -950,7 +952,7 @@ export function useDeletePartySessionsIdDevicesDeviceId<TData = Awaited<ReturnTy
           TError,
           Awaited<ReturnType<typeof deletePartySessionsIdDevicesDeviceId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useDeletePartySessionsIdDevicesDeviceId<TData = Awaited<ReturnType<typeof deletePartySessionsIdDevicesDeviceId>>, TError = UnauthorizedResponse | NotFoundResponse>(
@@ -961,12 +963,12 @@ export function useDeletePartySessionsIdDevicesDeviceId<TData = Awaited<ReturnTy
           TError,
           Awaited<ReturnType<typeof deletePartySessionsIdDevicesDeviceId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useDeletePartySessionsIdDevicesDeviceId<TData = Awaited<ReturnType<typeof deletePartySessionsIdDevicesDeviceId>>, TError = UnauthorizedResponse | NotFoundResponse>(
  id: string,
-    deviceId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deletePartySessionsIdDevicesDeviceId>>, TError, TData>>, }
+    deviceId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deletePartySessionsIdDevicesDeviceId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -975,7 +977,7 @@ export function useDeletePartySessionsIdDevicesDeviceId<TData = Awaited<ReturnTy
 
 export function useDeletePartySessionsIdDevicesDeviceId<TData = Awaited<ReturnType<typeof deletePartySessionsIdDevicesDeviceId>>, TError = UnauthorizedResponse | NotFoundResponse>(
  id: string,
-    deviceId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deletePartySessionsIdDevicesDeviceId>>, TError, TData>>, }
+    deviceId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deletePartySessionsIdDevicesDeviceId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

@@ -50,6 +50,8 @@ import type {
 import { vespinFetch } from '../../client';
 
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
 
 
 export type postAuthGuestResponse201 = {
@@ -107,16 +109,16 @@ export const getPostAuthGuestQueryKey = () => {
     }
 
 
-export const getPostAuthGuestQueryOptions = <TData = Awaited<ReturnType<typeof postAuthGuest>>, TError = InternalErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthGuest>>, TError, TData>>, }
+export const getPostAuthGuestQueryOptions = <TData = Awaited<ReturnType<typeof postAuthGuest>>, TError = InternalErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthGuest>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPostAuthGuestQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof postAuthGuest>>> = ({ signal }) => postAuthGuest({ signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof postAuthGuest>>> = ({ signal }) => postAuthGuest({ signal, ...requestOptions });
 
 
 
@@ -136,7 +138,7 @@ export function usePostAuthGuest<TData = Awaited<ReturnType<typeof postAuthGuest
           TError,
           Awaited<ReturnType<typeof postAuthGuest>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostAuthGuest<TData = Awaited<ReturnType<typeof postAuthGuest>>, TError = InternalErrorResponse>(
@@ -146,11 +148,11 @@ export function usePostAuthGuest<TData = Awaited<ReturnType<typeof postAuthGuest
           TError,
           Awaited<ReturnType<typeof postAuthGuest>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostAuthGuest<TData = Awaited<ReturnType<typeof postAuthGuest>>, TError = InternalErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthGuest>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthGuest>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -158,7 +160,7 @@ export function usePostAuthGuest<TData = Awaited<ReturnType<typeof postAuthGuest
  */
 
 export function usePostAuthGuest<TData = Awaited<ReturnType<typeof postAuthGuest>>, TError = InternalErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthGuest>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthGuest>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -246,16 +248,16 @@ export const getPostAuthRegisterQueryKey = (registerRequest?: RegisterRequest,) 
     }
 
 
-export const getPostAuthRegisterQueryOptions = <TData = Awaited<ReturnType<typeof postAuthRegister>>, TError = ValidationFailedResponse | ErrorResponse | InternalErrorResponse>(registerRequest: RegisterRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthRegister>>, TError, TData>>, }
+export const getPostAuthRegisterQueryOptions = <TData = Awaited<ReturnType<typeof postAuthRegister>>, TError = ValidationFailedResponse | ErrorResponse | InternalErrorResponse>(registerRequest: RegisterRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthRegister>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPostAuthRegisterQueryKey(registerRequest);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof postAuthRegister>>> = ({ signal }) => postAuthRegister(registerRequest, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof postAuthRegister>>> = ({ signal }) => postAuthRegister(registerRequest, { signal, ...requestOptions });
 
 
 
@@ -275,7 +277,7 @@ export function usePostAuthRegister<TData = Awaited<ReturnType<typeof postAuthRe
           TError,
           Awaited<ReturnType<typeof postAuthRegister>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostAuthRegister<TData = Awaited<ReturnType<typeof postAuthRegister>>, TError = ValidationFailedResponse | ErrorResponse | InternalErrorResponse>(
@@ -285,11 +287,11 @@ export function usePostAuthRegister<TData = Awaited<ReturnType<typeof postAuthRe
           TError,
           Awaited<ReturnType<typeof postAuthRegister>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostAuthRegister<TData = Awaited<ReturnType<typeof postAuthRegister>>, TError = ValidationFailedResponse | ErrorResponse | InternalErrorResponse>(
- registerRequest: RegisterRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthRegister>>, TError, TData>>, }
+ registerRequest: RegisterRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthRegister>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -297,7 +299,7 @@ export function usePostAuthRegister<TData = Awaited<ReturnType<typeof postAuthRe
  */
 
 export function usePostAuthRegister<TData = Awaited<ReturnType<typeof postAuthRegister>>, TError = ValidationFailedResponse | ErrorResponse | InternalErrorResponse>(
- registerRequest: RegisterRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthRegister>>, TError, TData>>, }
+ registerRequest: RegisterRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthRegister>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -375,16 +377,16 @@ export const getPostAuthLoginQueryKey = (loginRequest?: LoginRequest,) => {
     }
 
 
-export const getPostAuthLoginQueryOptions = <TData = Awaited<ReturnType<typeof postAuthLogin>>, TError = ValidationFailedResponse | ErrorResponse | InternalErrorResponse>(loginRequest: LoginRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthLogin>>, TError, TData>>, }
+export const getPostAuthLoginQueryOptions = <TData = Awaited<ReturnType<typeof postAuthLogin>>, TError = ValidationFailedResponse | ErrorResponse | InternalErrorResponse>(loginRequest: LoginRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthLogin>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPostAuthLoginQueryKey(loginRequest);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof postAuthLogin>>> = ({ signal }) => postAuthLogin(loginRequest, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof postAuthLogin>>> = ({ signal }) => postAuthLogin(loginRequest, { signal, ...requestOptions });
 
 
 
@@ -404,7 +406,7 @@ export function usePostAuthLogin<TData = Awaited<ReturnType<typeof postAuthLogin
           TError,
           Awaited<ReturnType<typeof postAuthLogin>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostAuthLogin<TData = Awaited<ReturnType<typeof postAuthLogin>>, TError = ValidationFailedResponse | ErrorResponse | InternalErrorResponse>(
@@ -414,11 +416,11 @@ export function usePostAuthLogin<TData = Awaited<ReturnType<typeof postAuthLogin
           TError,
           Awaited<ReturnType<typeof postAuthLogin>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostAuthLogin<TData = Awaited<ReturnType<typeof postAuthLogin>>, TError = ValidationFailedResponse | ErrorResponse | InternalErrorResponse>(
- loginRequest: LoginRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthLogin>>, TError, TData>>, }
+ loginRequest: LoginRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthLogin>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -426,7 +428,7 @@ export function usePostAuthLogin<TData = Awaited<ReturnType<typeof postAuthLogin
  */
 
 export function usePostAuthLogin<TData = Awaited<ReturnType<typeof postAuthLogin>>, TError = ValidationFailedResponse | ErrorResponse | InternalErrorResponse>(
- loginRequest: LoginRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthLogin>>, TError, TData>>, }
+ loginRequest: LoginRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postAuthLogin>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
