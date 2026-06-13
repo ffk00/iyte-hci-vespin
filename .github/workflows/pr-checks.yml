@@ -94,27 +94,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
+      # pnpm must be set up before setup-node so its built-in `cache: pnpm`
+      # can locate the store. This replaces the brittle `pnpm store path` +
+      # actions/cache dance that could yield an empty cache path.
       - uses: pnpm/action-setup@v4
         with:
           version: 11
           run_install: false
 
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-      - name: Cache pnpm store
-        uses: actions/cache@v4
+      - uses: actions/setup-node@v4
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('frontend/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -141,30 +133,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Validate spec (OpenAPI 3.1)
-        run: npx @redocly/cli@latest lint ../backend/api/openapi.yaml
-
       - uses: pnpm/action-setup@v4
         with:
           version: 11
           run_install: false
 
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-      - name: Cache pnpm store
-        uses: actions/cache@v4
+      - uses: actions/setup-node@v4
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('frontend/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Validate spec (OpenAPI 3.1)
+        run: npx @redocly/cli@latest lint ../backend/api/openapi.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
