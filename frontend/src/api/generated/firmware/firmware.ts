@@ -50,6 +50,8 @@ import type {
 import { vespinFetch } from '../../client';
 
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
 
 
 export type postFirmwareCheckResponse200 = {
@@ -124,16 +126,16 @@ export const getPostFirmwareCheckQueryKey = (firmwareCheckRequest?: FirmwareChec
     }
 
 
-export const getPostFirmwareCheckQueryOptions = <TData = Awaited<ReturnType<typeof postFirmwareCheck>>, TError = ValidationFailedResponse | UnauthorizedResponse | GuestForbiddenResponse | NotFoundResponse>(firmwareCheckRequest: FirmwareCheckRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postFirmwareCheck>>, TError, TData>>, }
+export const getPostFirmwareCheckQueryOptions = <TData = Awaited<ReturnType<typeof postFirmwareCheck>>, TError = ValidationFailedResponse | UnauthorizedResponse | GuestForbiddenResponse | NotFoundResponse>(firmwareCheckRequest: FirmwareCheckRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postFirmwareCheck>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPostFirmwareCheckQueryKey(firmwareCheckRequest);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof postFirmwareCheck>>> = ({ signal }) => postFirmwareCheck(firmwareCheckRequest, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof postFirmwareCheck>>> = ({ signal }) => postFirmwareCheck(firmwareCheckRequest, { signal, ...requestOptions });
 
 
 
@@ -153,7 +155,7 @@ export function usePostFirmwareCheck<TData = Awaited<ReturnType<typeof postFirmw
           TError,
           Awaited<ReturnType<typeof postFirmwareCheck>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostFirmwareCheck<TData = Awaited<ReturnType<typeof postFirmwareCheck>>, TError = ValidationFailedResponse | UnauthorizedResponse | GuestForbiddenResponse | NotFoundResponse>(
@@ -163,11 +165,11 @@ export function usePostFirmwareCheck<TData = Awaited<ReturnType<typeof postFirmw
           TError,
           Awaited<ReturnType<typeof postFirmwareCheck>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostFirmwareCheck<TData = Awaited<ReturnType<typeof postFirmwareCheck>>, TError = ValidationFailedResponse | UnauthorizedResponse | GuestForbiddenResponse | NotFoundResponse>(
- firmwareCheckRequest: FirmwareCheckRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postFirmwareCheck>>, TError, TData>>, }
+ firmwareCheckRequest: FirmwareCheckRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postFirmwareCheck>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -175,7 +177,7 @@ export function usePostFirmwareCheck<TData = Awaited<ReturnType<typeof postFirmw
  */
 
 export function usePostFirmwareCheck<TData = Awaited<ReturnType<typeof postFirmwareCheck>>, TError = ValidationFailedResponse | UnauthorizedResponse | GuestForbiddenResponse | NotFoundResponse>(
- firmwareCheckRequest: FirmwareCheckRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postFirmwareCheck>>, TError, TData>>, }
+ firmwareCheckRequest: FirmwareCheckRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postFirmwareCheck>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

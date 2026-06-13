@@ -53,6 +53,8 @@ import type {
 import { vespinFetch } from '../../client';
 
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
 
 
 export type getEqProfilesResponse200 = {
@@ -124,16 +126,16 @@ export const getGetEqProfilesQueryKey = (params?: GetEqProfilesParams,) => {
     }
 
 
-export const getGetEqProfilesQueryOptions = <TData = Awaited<ReturnType<typeof getEqProfiles>>, TError = ValidationFailedResponse | UnauthorizedResponse>(params?: GetEqProfilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEqProfiles>>, TError, TData>>, }
+export const getGetEqProfilesQueryOptions = <TData = Awaited<ReturnType<typeof getEqProfiles>>, TError = ValidationFailedResponse | UnauthorizedResponse>(params?: GetEqProfilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEqProfiles>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetEqProfilesQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEqProfiles>>> = ({ signal }) => getEqProfiles(params, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEqProfiles>>> = ({ signal }) => getEqProfiles(params, { signal, ...requestOptions });
 
 
 
@@ -153,7 +155,7 @@ export function useGetEqProfiles<TData = Awaited<ReturnType<typeof getEqProfiles
           TError,
           Awaited<ReturnType<typeof getEqProfiles>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetEqProfiles<TData = Awaited<ReturnType<typeof getEqProfiles>>, TError = ValidationFailedResponse | UnauthorizedResponse>(
@@ -163,11 +165,11 @@ export function useGetEqProfiles<TData = Awaited<ReturnType<typeof getEqProfiles
           TError,
           Awaited<ReturnType<typeof getEqProfiles>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetEqProfiles<TData = Awaited<ReturnType<typeof getEqProfiles>>, TError = ValidationFailedResponse | UnauthorizedResponse>(
- params?: GetEqProfilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEqProfiles>>, TError, TData>>, }
+ params?: GetEqProfilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEqProfiles>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -175,7 +177,7 @@ export function useGetEqProfiles<TData = Awaited<ReturnType<typeof getEqProfiles
  */
 
 export function useGetEqProfiles<TData = Awaited<ReturnType<typeof getEqProfiles>>, TError = ValidationFailedResponse | UnauthorizedResponse>(
- params?: GetEqProfilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEqProfiles>>, TError, TData>>, }
+ params?: GetEqProfilesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEqProfiles>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -248,16 +250,16 @@ export const getPostEqProfilesQueryKey = (eQProfileCreateRequest?: EQProfileCrea
     }
 
 
-export const getPostEqProfilesQueryOptions = <TData = Awaited<ReturnType<typeof postEqProfiles>>, TError = ValidationFailedResponse | UnauthorizedResponse>(eQProfileCreateRequest: EQProfileCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postEqProfiles>>, TError, TData>>, }
+export const getPostEqProfilesQueryOptions = <TData = Awaited<ReturnType<typeof postEqProfiles>>, TError = ValidationFailedResponse | UnauthorizedResponse>(eQProfileCreateRequest: EQProfileCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postEqProfiles>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPostEqProfilesQueryKey(eQProfileCreateRequest);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof postEqProfiles>>> = ({ signal }) => postEqProfiles(eQProfileCreateRequest, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof postEqProfiles>>> = ({ signal }) => postEqProfiles(eQProfileCreateRequest, { signal, ...requestOptions });
 
 
 
@@ -277,7 +279,7 @@ export function usePostEqProfiles<TData = Awaited<ReturnType<typeof postEqProfil
           TError,
           Awaited<ReturnType<typeof postEqProfiles>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostEqProfiles<TData = Awaited<ReturnType<typeof postEqProfiles>>, TError = ValidationFailedResponse | UnauthorizedResponse>(
@@ -287,11 +289,11 @@ export function usePostEqProfiles<TData = Awaited<ReturnType<typeof postEqProfil
           TError,
           Awaited<ReturnType<typeof postEqProfiles>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostEqProfiles<TData = Awaited<ReturnType<typeof postEqProfiles>>, TError = ValidationFailedResponse | UnauthorizedResponse>(
- eQProfileCreateRequest: EQProfileCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postEqProfiles>>, TError, TData>>, }
+ eQProfileCreateRequest: EQProfileCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postEqProfiles>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -299,7 +301,7 @@ export function usePostEqProfiles<TData = Awaited<ReturnType<typeof postEqProfil
  */
 
 export function usePostEqProfiles<TData = Awaited<ReturnType<typeof postEqProfiles>>, TError = ValidationFailedResponse | UnauthorizedResponse>(
- eQProfileCreateRequest: EQProfileCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postEqProfiles>>, TError, TData>>, }
+ eQProfileCreateRequest: EQProfileCreateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postEqProfiles>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -375,16 +377,16 @@ export const getGetEqProfilesIdQueryKey = (id: string,) => {
     }
 
 
-export const getGetEqProfilesIdQueryOptions = <TData = Awaited<ReturnType<typeof getEqProfilesId>>, TError = UnauthorizedResponse | NotFoundResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEqProfilesId>>, TError, TData>>, }
+export const getGetEqProfilesIdQueryOptions = <TData = Awaited<ReturnType<typeof getEqProfilesId>>, TError = UnauthorizedResponse | NotFoundResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEqProfilesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetEqProfilesIdQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEqProfilesId>>> = ({ signal }) => getEqProfilesId(id, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEqProfilesId>>> = ({ signal }) => getEqProfilesId(id, { signal, ...requestOptions });
 
 
 
@@ -404,7 +406,7 @@ export function useGetEqProfilesId<TData = Awaited<ReturnType<typeof getEqProfil
           TError,
           Awaited<ReturnType<typeof getEqProfilesId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetEqProfilesId<TData = Awaited<ReturnType<typeof getEqProfilesId>>, TError = UnauthorizedResponse | NotFoundResponse>(
@@ -414,11 +416,11 @@ export function useGetEqProfilesId<TData = Awaited<ReturnType<typeof getEqProfil
           TError,
           Awaited<ReturnType<typeof getEqProfilesId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetEqProfilesId<TData = Awaited<ReturnType<typeof getEqProfilesId>>, TError = UnauthorizedResponse | NotFoundResponse>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEqProfilesId>>, TError, TData>>, }
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEqProfilesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -426,7 +428,7 @@ export function useGetEqProfilesId<TData = Awaited<ReturnType<typeof getEqProfil
  */
 
 export function useGetEqProfilesId<TData = Awaited<ReturnType<typeof getEqProfilesId>>, TError = UnauthorizedResponse | NotFoundResponse>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEqProfilesId>>, TError, TData>>, }
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEqProfilesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -516,16 +518,16 @@ export const getPatchEqProfilesIdQueryKey = (id: string,
 
 
 export const getPatchEqProfilesIdQueryOptions = <TData = Awaited<ReturnType<typeof patchEqProfilesId>>, TError = ValidationFailedResponse | UnauthorizedResponse | ErrorResponse | NotFoundResponse>(id: string,
-    eQProfileUpdateRequest: EQProfileUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchEqProfilesId>>, TError, TData>>, }
+    eQProfileUpdateRequest: EQProfileUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchEqProfilesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPatchEqProfilesIdQueryKey(id,eQProfileUpdateRequest);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof patchEqProfilesId>>> = ({ signal }) => patchEqProfilesId(id,eQProfileUpdateRequest, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof patchEqProfilesId>>> = ({ signal }) => patchEqProfilesId(id,eQProfileUpdateRequest, { signal, ...requestOptions });
 
 
 
@@ -546,7 +548,7 @@ export function usePatchEqProfilesId<TData = Awaited<ReturnType<typeof patchEqPr
           TError,
           Awaited<ReturnType<typeof patchEqProfilesId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePatchEqProfilesId<TData = Awaited<ReturnType<typeof patchEqProfilesId>>, TError = ValidationFailedResponse | UnauthorizedResponse | ErrorResponse | NotFoundResponse>(
@@ -557,12 +559,12 @@ export function usePatchEqProfilesId<TData = Awaited<ReturnType<typeof patchEqPr
           TError,
           Awaited<ReturnType<typeof patchEqProfilesId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePatchEqProfilesId<TData = Awaited<ReturnType<typeof patchEqProfilesId>>, TError = ValidationFailedResponse | UnauthorizedResponse | ErrorResponse | NotFoundResponse>(
  id: string,
-    eQProfileUpdateRequest: EQProfileUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchEqProfilesId>>, TError, TData>>, }
+    eQProfileUpdateRequest: EQProfileUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchEqProfilesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -571,7 +573,7 @@ export function usePatchEqProfilesId<TData = Awaited<ReturnType<typeof patchEqPr
 
 export function usePatchEqProfilesId<TData = Awaited<ReturnType<typeof patchEqProfilesId>>, TError = ValidationFailedResponse | UnauthorizedResponse | ErrorResponse | NotFoundResponse>(
  id: string,
-    eQProfileUpdateRequest: EQProfileUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchEqProfilesId>>, TError, TData>>, }
+    eQProfileUpdateRequest: EQProfileUpdateRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof patchEqProfilesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -654,16 +656,16 @@ export const getDeleteEqProfilesIdQueryKey = (id: string,) => {
     }
 
 
-export const getDeleteEqProfilesIdQueryOptions = <TData = Awaited<ReturnType<typeof deleteEqProfilesId>>, TError = UnauthorizedResponse | ErrorResponse | NotFoundResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteEqProfilesId>>, TError, TData>>, }
+export const getDeleteEqProfilesIdQueryOptions = <TData = Awaited<ReturnType<typeof deleteEqProfilesId>>, TError = UnauthorizedResponse | ErrorResponse | NotFoundResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteEqProfilesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getDeleteEqProfilesIdQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof deleteEqProfilesId>>> = ({ signal }) => deleteEqProfilesId(id, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof deleteEqProfilesId>>> = ({ signal }) => deleteEqProfilesId(id, { signal, ...requestOptions });
 
 
 
@@ -683,7 +685,7 @@ export function useDeleteEqProfilesId<TData = Awaited<ReturnType<typeof deleteEq
           TError,
           Awaited<ReturnType<typeof deleteEqProfilesId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useDeleteEqProfilesId<TData = Awaited<ReturnType<typeof deleteEqProfilesId>>, TError = UnauthorizedResponse | ErrorResponse | NotFoundResponse>(
@@ -693,11 +695,11 @@ export function useDeleteEqProfilesId<TData = Awaited<ReturnType<typeof deleteEq
           TError,
           Awaited<ReturnType<typeof deleteEqProfilesId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useDeleteEqProfilesId<TData = Awaited<ReturnType<typeof deleteEqProfilesId>>, TError = UnauthorizedResponse | ErrorResponse | NotFoundResponse>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteEqProfilesId>>, TError, TData>>, }
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteEqProfilesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -705,7 +707,7 @@ export function useDeleteEqProfilesId<TData = Awaited<ReturnType<typeof deleteEq
  */
 
 export function useDeleteEqProfilesId<TData = Awaited<ReturnType<typeof deleteEqProfilesId>>, TError = UnauthorizedResponse | ErrorResponse | NotFoundResponse>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteEqProfilesId>>, TError, TData>>, }
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteEqProfilesId>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -791,16 +793,16 @@ export const getPostEqProfilesIdForkQueryKey = (id: string,
 
 
 export const getPostEqProfilesIdForkQueryOptions = <TData = Awaited<ReturnType<typeof postEqProfilesIdFork>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(id: string,
-    eQProfileForkRequest: EQProfileForkRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postEqProfilesIdFork>>, TError, TData>>, }
+    eQProfileForkRequest: EQProfileForkRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postEqProfilesIdFork>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPostEqProfilesIdForkQueryKey(id,eQProfileForkRequest);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof postEqProfilesIdFork>>> = ({ signal }) => postEqProfilesIdFork(id,eQProfileForkRequest, { signal });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof postEqProfilesIdFork>>> = ({ signal }) => postEqProfilesIdFork(id,eQProfileForkRequest, { signal, ...requestOptions });
 
 
 
@@ -821,7 +823,7 @@ export function usePostEqProfilesIdFork<TData = Awaited<ReturnType<typeof postEq
           TError,
           Awaited<ReturnType<typeof postEqProfilesIdFork>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostEqProfilesIdFork<TData = Awaited<ReturnType<typeof postEqProfilesIdFork>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(
@@ -832,12 +834,12 @@ export function usePostEqProfilesIdFork<TData = Awaited<ReturnType<typeof postEq
           TError,
           Awaited<ReturnType<typeof postEqProfilesIdFork>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePostEqProfilesIdFork<TData = Awaited<ReturnType<typeof postEqProfilesIdFork>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(
  id: string,
-    eQProfileForkRequest: EQProfileForkRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postEqProfilesIdFork>>, TError, TData>>, }
+    eQProfileForkRequest: EQProfileForkRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postEqProfilesIdFork>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -846,7 +848,7 @@ export function usePostEqProfilesIdFork<TData = Awaited<ReturnType<typeof postEq
 
 export function usePostEqProfilesIdFork<TData = Awaited<ReturnType<typeof postEqProfilesIdFork>>, TError = ErrorResponse | UnauthorizedResponse | NotFoundResponse>(
  id: string,
-    eQProfileForkRequest: EQProfileForkRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postEqProfilesIdFork>>, TError, TData>>, }
+    eQProfileForkRequest: EQProfileForkRequest, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postEqProfilesIdFork>>, TError, TData>>, request?: SecondParameter<typeof vespinFetch>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
