@@ -1,11 +1,12 @@
 import { Text, type TextProps } from "react-native";
 import { useSurfaceTone, type SurfaceTone } from "@/providers/SurfaceProvider";
 
-export type TextVariant = "display" | "title" | "body" | "button" | "caption";
-export type TextTone = "default" | "muted" | "onPrimary" | "danger";
+export type TextVariant = "display" | "headline" | "title" | "body" | "button" | "caption";
+export type TextTone = "default" | "muted" | "brand" | "brandMuted" | "onPrimary" | "danger";
 
 const VARIANT: Record<TextVariant, string> = {
   display: "font-display text-[40px] leading-[44px]",
+  headline: "text-[32px] leading-9 font-bold",
   button: "font-display text-base leading-5",
   title: "text-xl leading-7 font-semibold",
   body: "text-base leading-6",
@@ -15,6 +16,8 @@ const VARIANT: Record<TextVariant, string> = {
 const TONE: Record<TextTone, string> = {
   default: "text-ink",
   muted: "text-muted",
+  brand: "text-primary",
+  brandMuted: "text-primaryMuted",
   onPrimary: "text-onPrimary",
   danger: "text-danger",
 };

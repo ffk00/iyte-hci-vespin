@@ -38,7 +38,7 @@ export default function RootLayout() {
           <AuthSessionProvider>
             <ThemeProvider>
               <I18nProvider>
-                <StatusBar style="light" />
+                <StatusBar style="dark" />
                 <Stack screenOptions={{ headerShown: false }} />
               </I18nProvider>
             </ThemeProvider>

@@ -307,15 +307,17 @@ The design system foundation lives in `src/theme/`, `src/components/ui/`,
 
 - **Two-tier tokens.** Primitive values (`brand.maroon`, `brand.cream`,
   `neutral.*`) live in `src/theme/colors.ts`. Components consume only the
-  semantic aliases (`background`, `surface`, `primary`, `onPrimary`, `ink`,
-  `muted`, `border`, `danger`). Never import `primitive.*` from a component.
+  semantic aliases (`background`, `backgroundAlt`, `surface`, `primary`,
+  `primaryMuted`, `onPrimary`, `ink`, `muted`, `border`, `danger`). Never
+  import `primitive.*` from a component.
 - **No raw hex in className.** Always go through a semantic token
   (`bg-surface`, `text-ink`, `border-border`). Tailwind arbitrary values
   (`bg-[#5C0F1A]`) are forbidden.
 - **All text goes through `AppText`.** No bare `<Text>` in `app/` or
-  `src/features/`. Variants: `display`, `title`, `body`, `button`, `caption`.
-  Tones: `default`, `muted`, `onPrimary`, `danger`. ZenDots is reserved for
-  `display` and `button` variants; body text uses the platform default.
+  `src/features/`. Variants: `display`, `headline`, `title`, `body`, `button`,
+  `caption`. Tones: `default`, `muted`, `brand`, `brandMuted`, `onPrimary`,
+  `danger`. ZenDots is reserved for `display` and `button` variants; `headline`
+  (marketing heads) and body text use the platform default.
 - **Surface tone is contextual.** `<Screen tone="primary">` flips nested
   `AppText`/`Icon` defaults to `onPrimary` via `SurfaceContext`. Pass an
   explicit `tone` prop to override.
@@ -327,9 +329,11 @@ The design system foundation lives in `src/theme/`, `src/components/ui/`,
 - **Composition boundary.** Components in `src/components/ui/` and
   `src/components/layout/` MUST NOT import from `src/features/`. Layout
   primitives are domain-agnostic.
-- **Brand mark.** `src/components/brand/Mark.tsx` renders
-  `assets/brand/mark.png`. Update the asset, not the component, to refresh
-  the mark.
+- **Brand mark.** `src/components/brand/Mark.tsx` draws the Vespin bullseye
+  inline with `react-native-svg` (same approach as `GoogleIcon`), using the
+  vector data from `assets/brand/mark.svg`. There is no svg-transformer in
+  Metro, so `.svg` files can't be `import`ed as components. To refresh the mark,
+  update `mark.svg` and re-sync the shapes in `Mark.tsx`.
 
 ## Styling — NativeWind only
 

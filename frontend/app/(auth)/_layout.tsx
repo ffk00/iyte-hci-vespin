@@ -1,5 +1,6 @@
 import { Redirect, Stack } from "expo-router";
 import { useAuthStore } from "@/features/auth/store";
+import { semantic } from "@/theme/colors";
 
 export default function AuthLayout() {
   const token = useAuthStore((s) => s.token);
@@ -11,7 +12,7 @@ export default function AuthLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: "#460812" },
+        contentStyle: { backgroundColor: semantic.background },
       }}
     />
   );

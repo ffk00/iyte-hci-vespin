@@ -378,14 +378,13 @@ Manual verification checklist for the foundation PR:
 
 ## Open Questions
 
-1. **Final brand hex values** — provisional palette is sampled from the
-   PNGs. User to supply authoritative `brand.maroon` and `brand.cream` ramps.
-   When swapping in, only `src/theme/colors.ts` changes; no component touch
-   needed.
-2. **Brand mark asset** — current `assets/brand/mark.png` is a placeholder
-   slot. Need final mark in 1x/2x/3x or as SVG (would require
-   `react-native-svg`, which is fine in managed workflow but not assumed in
-   this spec).
+1. **Final brand hex values** — RESOLVED. Authoritative palette supplied:
+   cream `50:#FBF2F1` (background), `100:#F4E9E6` (backgroundAlt), maroon
+   `700:#550F12` (primary/button), plus `maroon.300:#8C5B61` →
+   `primaryMuted` for soft brand text. Lives in `src/theme/colors.ts`.
+2. **Brand mark asset** — RESOLVED. `assets/brand/mark.png` is the concentric
+   Vespin logo (also the splash image). `react-native-svg` is now a project
+   dependency (used by `WaveDivider`); SVG marks are an option going forward.
 3. **Display font scale beyond 40pt** — designs show one display size
    (~40pt) but the "WELCOME" overlay reads larger relative to viewport. May
    need a `displayLg` (~56pt) once the Welcome screen is laid out for real.

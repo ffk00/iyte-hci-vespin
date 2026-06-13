@@ -1,28 +1,45 @@
-import { Image } from "react-native";
+import Svg, { Circle, Path, Rect } from "react-native-svg";
 
-const MARK_SOURCE = require("../../../assets/brand/mark.png");
-
-export type MarkSize = "sm" | "md" | "lg";
+export type MarkSize = "sm" | "md" | "lg" | "xl";
 
 const SIZE: Record<MarkSize, number> = {
   sm: 48,
   md: 96,
   lg: 160,
+  xl: 220,
 };
 
 type Props = {
   size?: MarkSize;
 };
 
+// Vespin bullseye mark. Inlined from assets/brand/mark.svg and drawn with
+// react-native-svg (same approach as GoogleIcon) so it renders crisp at any
+// size with no Metro/transformer setup. The source drop shadow is omitted; the
+// concentric rings carry the form. Brand colors are the asset's literal hex —
+// this is a fixed brand glyph, not a themed surface. To refresh the mark, update
+// mark.svg and re-sync the shapes below.
 export function Mark({ size = "md" }: Props) {
   const px = SIZE[size];
   return (
-    <Image
-      source={MARK_SOURCE}
-      style={{ width: px, height: px }}
-      resizeMode="contain"
+    <Svg
+      width={px}
+      height={px}
+      viewBox="0 0 339 339"
       accessibilityRole="image"
       accessibilityLabel="Vespin"
-    />
+    >
+      <Circle cx={169.306} cy={165.306} r={165.306} fill="#000000" />
+      <Circle cx={169.304} cy={165.304} r={139.875} fill="#F6F1E8" />
+      <Circle cx={169.307} cy={165.298} r={114.443} fill="#000000" />
+      <Circle cx={169.311} cy={165.298} r={89.0111} fill="#F6F1E8" />
+      <Circle cx={169.307} cy={165.32} r={63.5794} fill="#000000" />
+      <Rect x={196.311} y={153.297} width={138} height={25} fill="#460812" />
+      <Circle cx={169.317} cy={165.288} r={38.1476} fill="#F6F1E8" />
+      <Path
+        d="M253.819 170.297L249.311 160.287H251.747L255.457 168.547H255.639L259.349 160.287H261.785L257.277 170.297H253.819ZM262.76 170.297V160.287H273.736V162.107H265V164.319H272.924V166.139H265V168.477H273.736V170.297H262.76ZM274.948 170.367V168.547L282.998 168.561C283.408 168.561 283.721 168.468 283.936 168.281C284.16 168.085 284.272 167.772 284.272 167.343C284.272 166.914 284.16 166.606 283.936 166.419C283.721 166.223 283.408 166.125 282.998 166.125H277.986C276.95 166.125 276.142 165.878 275.564 165.383C274.994 164.879 274.71 164.142 274.71 163.171C274.71 162.2 274.994 161.468 275.564 160.973C276.142 160.469 276.95 160.217 277.986 160.217H285.854V162.037L278.224 162.023C277.822 162.023 277.51 162.116 277.286 162.303C277.062 162.48 276.95 162.77 276.95 163.171C276.95 163.572 277.062 163.866 277.286 164.053C277.51 164.23 277.822 164.319 278.224 164.319H283.236C284.272 164.319 285.074 164.576 285.644 165.089C286.222 165.593 286.512 166.344 286.512 167.343C286.512 168.332 286.222 169.084 285.644 169.597C285.074 170.11 284.272 170.367 283.236 170.367H274.948ZM287.916 170.297V160.287H296.302C297.338 160.287 298.141 160.548 298.71 161.071C299.289 161.594 299.578 162.387 299.578 163.451C299.578 164.515 299.289 165.308 298.71 165.831C298.141 166.354 297.338 166.615 296.302 166.615H290.156V170.297H287.916ZM296.036 162.107H290.156V164.781L296.036 164.795C296.447 164.795 296.759 164.692 296.974 164.487C297.198 164.282 297.31 163.936 297.31 163.451C297.31 162.956 297.198 162.611 296.974 162.415C296.759 162.21 296.447 162.107 296.036 162.107ZM300.973 170.297V160.287H303.213V170.297H300.973ZM305.17 170.297V160.287H307.438L314.522 167.483V160.287H316.762V170.297H314.494L307.41 163.087V170.297H305.17Z"
+        fill="#F5F0E7"
+      />
+    </Svg>
   );
 }

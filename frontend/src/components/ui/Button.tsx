@@ -11,8 +11,8 @@ const BTN_VARIANT: Record<ButtonVariant, string> = {
 };
 
 const BTN_SIZE: Record<ButtonSize, string> = {
-  md: "h-11 px-4 rounded-pill",
-  lg: "h-14 px-6 rounded-pill",
+  md: "h-11 px-4 rounded-xl",
+  lg: "h-14 px-6 rounded-xl",
 };
 
 const DEFAULT_LABEL_TONE: Record<ButtonVariant, TextTone> = {
