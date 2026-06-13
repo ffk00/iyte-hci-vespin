@@ -1,2 +1,5 @@
 allowBuilds:
   esbuild: true
+  # Native resolver pulled in by eslint-config-expo. Ships prebuilt binaries,
+  # so its build script is not needed; skip it for deterministic installs.
+  unrs-resolver: false
