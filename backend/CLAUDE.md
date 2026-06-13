@@ -57,9 +57,12 @@ backend/
 │   └── server/                      Router assembly (router.go)
 ├── api/
 │   └── openapi.yaml                 The HTTP contract
-├── Dockerfile                       Multi-stage build, distroless runtime
+├── Dockerfile                       Multi-stage build, distroless runtime (prod)
+├── Dockerfile.dev                   Dev image: air hot-reload (local only)
 ├── Dockerfile.migrate               golang-migrate image + bundled migrations
 ├── docker-compose.yml               Local dev stack
+├── docker-compose.override.yml      Dev override: bind-mount + air (auto-merged)
+├── .air.toml                        air live-reload config (poll-based)
 ├── Makefile                         Common commands
 ├── go.mod
 └── go.sum

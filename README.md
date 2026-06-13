@@ -82,15 +82,53 @@ this course project.
 - Optional: Go 1.23+ for backend tests and local tooling
 - Optional: [sqlc](https://docs.sqlc.dev/en/latest/overview/install.html) CLI for query regeneration
 
+### Quick start (one command)
+
+From the repo root:
+
+```bash
+./dev.sh
+```
+
+This brings up the backend stack in Docker, waits for the API to report healthy,
+auto-detects your LAN IP into `frontend/.env.local`, installs frontend deps and
+regenerates the API client if needed, then starts Expo with the QR / interactive
+menu. Scan the QR with Expo Go, or press `a` / `i` for an emulator.
+
+On Windows, run `./dev.sh` from Git Bash or WSL. If IP autodetection picks the
+wrong interface (VPN, multiple NICs), override it:
+
+```bash
+VESPIN_LAN_IP=192.168.1.42 ./dev.sh
+```
+
+Useful flags: `--backend-only` (skip Expo), `--build` (rebuild the api dev
+image), `--down` (tear the backend stack down).
+
+The rest of this section explains the moving parts if you want to run them
+individually.
+
 ### Backend
 
 ```bash
 cd backend
-docker compose up
+docker compose up      # or: make up
 ```
 
-The API listens on `http://localhost:8080`. Use `GET /healthz` to verify it is
-running. You do not need Go installed just to run the Docker-based local stack.
+The API listens on `http://localhost:8080`; `GET /healthz` returns `{"status":"ok"}`.
+You do not need Go installed — the API runs in a container with **`air`
+hot-reload**: editing any `.go` file rebuilds and restarts it in ~1s, no image
+rebuild. (`docker-compose.override.yml` wires this in automatically.) To run the
+production-shaped distroless build instead, bypass the override:
+
+```bash
+cd backend
+docker compose -f docker-compose.yml up --build
+```
+
+`backend/Makefile` has shortcuts: `make up`, `make down`, `make logs`,
+`make migrate`, `make new-migration NAME=...`, `make sqlc`, `make lint`,
+`make test`. Run `make` with no target for the full list.
 
 Regenerate SQL types after editing `internal/db/queries/*.sql`:
 
