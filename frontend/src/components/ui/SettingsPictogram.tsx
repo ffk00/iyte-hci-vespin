@@ -1,0 +1,26 @@
+import Svg, { Ellipse, Path, Rect } from "react-native-svg";
+
+type Props = {
+  size?: number;
+};
+
+// A cog with eight teeth and a hollow hub, inside the shared double-border
+// frame. Colors are baked to the brand palette to match the exported design.
+export function SettingsPictogram({ size = 28 }: Props) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 32 32" fill="none">
+      <Ellipse cx={15.8663} cy={16.1338} rx={9.8504} ry={9.8506} fill="#F6F1E8" />
+      <Ellipse cx={15.8664} cy={16.1362} rx={4.9252} ry={4.9253} fill="#440812" />
+      <Path d="M13.4035 3.5528L12.5826 6.83634H19.1496L18.3287 3.5528C16.34 2.78621 15.2499 2.84553 13.4035 3.5528Z" fill="#F6F1E8" />
+      <Path d="M8.88669 26.984L11.7691 25.2101L7.07367 20.619L5.3651 23.5407C6.25113 25.4791 7.07206 26.1989 8.88669 26.984Z" fill="#F6F1E8" />
+      <Path d="M28.4472 13.6724L25.1637 12.8516V19.4186L28.4472 18.5977C29.2138 16.609 29.1545 15.5188 28.4472 13.6724Z" fill="#F6F1E8" />
+      <Path d="M5.20436 9.23312L6.97821 12.1156L11.5692 7.42006L8.64762 5.71146C6.70918 6.59751 5.98947 7.41846 5.20436 9.23312Z" fill="#F6F1E8" />
+      <Path d="M13.4035 28.4472L12.5826 25.1637H19.1496L18.3287 28.4472C16.34 29.2138 15.2499 29.1545 13.4035 28.4472Z" fill="#F6F1E8" />
+      <Path d="M26.2904 9.1827L24.5818 12.1044L19.8864 7.51327L22.7688 5.73938C24.7267 6.58161 25.4647 7.38616 26.2904 9.1827Z" fill="#F6F1E8" />
+      <Path d="M3.55279 13.6724L6.83626 12.8516V19.4186L3.55279 18.5977C2.78622 16.609 2.84554 15.5188 3.55279 13.6724Z" fill="#F6F1E8" />
+      <Path d="M23.0038 26.636L20.0822 24.9274L24.6732 20.2318L26.4471 23.1143C25.6049 25.0722 24.8003 25.8102 23.0038 26.636Z" fill="#F6F1E8" />
+      <Rect x={0.5} y={0.5} width={31} height={31} stroke="black" />
+      <Rect x={2.5} y={2.5} width={27} height={27} stroke="black" />
+    </Svg>
+  );
+}

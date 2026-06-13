@@ -5,53 +5,58 @@
       "guest": "Misafir hesap"
     },
     "welcome": {
-      "title": "HOSGELDIN",
-      "licence": "Lisans Sozlesmesi",
+      "title": "Hoşgeldin",
+      "start": "Başla",
+      "termsPrefix": "Devam ederek ",
+      "termsOfUse": "Kullanım Şartları",
+      "termsAnd": " ve ",
       "privacy": "Gizlilik Politikasi",
-      "start": "Basla"
+      "termsSuffix": "'ni kabul etmis olursunuz."
     },
     "chooser": {
+      "heading": "VESPIN'e Hoşgeldin",
+      "subtitle": "Akıllı ses. Zahmetsiz kontrol. Hepsi tek yerde.",
       "guest": "Misafir olarak devam et",
-      "login": "VESPIN'e giris yap",
-      "register": "VESPIN'e kayit ol",
+      "login": "Giriş yap",
+      "register": "Kayıt ol",
       "or": "veya devam et"
     },
     "errors": {
-      "generic": "Bir sorun olustu. Lutfen tekrar deneyin.",
-      "invalidEmail": "Gecerli bir e-posta adresi girin.",
-      "passwordLength": "Sifre en az 8 karakter olmali.",
-      "passwordRequired": "Sifrenizi girin."
+      "generic": "Bir sorun oluştu. Lütfen tekrar deneyin.",
+      "invalidEmail": "Geçerli bir e-posta adresi girin.",
+      "passwordLength": "Şifre en az 8 karakter olmalı.",
+      "passwordRequired": "Şifrenizi girin."
     },
     "fields": {
-      "displayName": "Gorunen ad",
+      "displayName": "Görünen ad",
       "email": "E-posta",
-      "password": "Sifre"
+      "password": "Şifre"
     },
     "guest": {
       "chooserLink": "Geri",
       "submit": "Devam et",
-      "submitting": "Misafir oturumu olusturuluyor...",
-      "subtitle": "Vespin'i e-posta olmadan kullanin. Daha sonra kayit olup verilerinizi koruyabilirsiniz.",
+      "submitting": "Misafir oturumu oluşturuluyor...",
+      "subtitle": "Vespin'i e-posta olmadan kullanın. Daha sonra kayıt olup verilerinizi koruyabilirsiniz.",
       "title": "Misafir olarak devam et"
     },
     "login": {
       "guestLink": "Misafir olarak devam et",
       "registerLink": "Hesap olustur",
-      "submit": "Giris yap",
-      "submitting": "Giris yapiliyor...",
-      "subtitle": "Hoparlor kurulumunuzu senkronize etmek icin Vespin hesabinizi kullanin.",
-      "title": "Giris yap"
+      "submit": "Giriş yap",
+      "submitting": "Giriş yapılıyor...",
+      "subtitle": "Hoparlör kurulumunuzu senkronize etmek için Vespin hesabınızı kullanın.",
+      "title": "Giriş yap"
     },
     "logout": {
-      "submit": "Cikis yap",
-      "submitting": "Cikis yapiliyor..."
+      "submit": "Çıkış yap",
+      "submitting": "Çıkış yapılıyor..."
     },
     "register": {
-      "loginLink": "Zaten hesabiniz var mi? Giris yapin",
-      "submit": "Hesap olustur",
-      "submitting": "Hesap olusturuluyor...",
-      "subtitle": "Yeni hesap olusturun veya zaten misafir olarak kullaniyorsaniz oturumunuzu donusturun.",
-      "title": "Hesap olustur"
+      "loginLink": "Zaten hesabınız var mı? Giriş yapın",
+      "submit": "Hesap oluştur",
+      "submitting": "Hesap oluşturuluyor...",
+      "subtitle": "Yeni hesap oluşturun veya zaten misafir olarak kullanıyorsanız oturumunuzu donusturun.",
+      "title": "Hesap oluştur"
     },
     "roles": {
       "guest": "Misafir",

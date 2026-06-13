@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/brand/mark.png",
       "resizeMode": "contain",
-      "backgroundColor": "#460812"
+      "backgroundColor": "#FBF2F1"
     },
     "ios": {
       "supportsTablet": true,

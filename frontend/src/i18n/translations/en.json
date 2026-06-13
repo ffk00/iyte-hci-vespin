@@ -5,15 +5,20 @@
       "guest": "Guest account"
     },
     "welcome": {
-      "title": "WELCOME",
-      "licence": "Licence Agreement",
+      "title": "Welcome",
+      "start": "Start",
+      "termsPrefix": "By continuing, you agree to our ",
+      "termsOfUse": "Terms of Use",
+      "termsAnd": " and ",
       "privacy": "Privacy Policy",
-      "start": "Start"
+      "termsSuffix": "."
     },
     "chooser": {
+      "heading": "Welcome to VESPIN",
+      "subtitle": "Smart sound. Effortless control. All in one place.",
       "guest": "Continue as guest",
-      "login": "Log in to VESPIN",
-      "register": "Sign up to VESPIN",
+      "login": "Log in",
+      "register": "Sign up",
       "or": "or continue with"
     },
     "errors": {

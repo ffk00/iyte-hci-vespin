@@ -1,70 +1,96 @@
-import { Image, Pressable, View } from "react-native";
+import { Image, Pressable, ScrollView, View } from "react-native";
 import { router } from "expo-router";
 import { Screen } from "@/components/layout/Screen";
+import { WaveDivider } from "@/components/layout/WaveDivider";
 import { AppText } from "@/components/ui/AppText";
 import { Button } from "@/components/ui/Button";
-import { IconButton } from "@/components/ui/IconButton";
+import { Icon } from "@/components/ui/Icon";
+import { GoogleIcon } from "@/components/ui/GoogleIcon";
+import { SocialButton } from "@/components/ui/SocialButton";
 import { Mark } from "@/components/brand/Mark";
 import { useTranslation } from "@/providers/I18nProvider";
 
-const HERO = require("../../assets/images/hero-auth.png");
+const SPOTIFY = require("../../assets/spotify-logo.png");
 
 export default function ChooserScreen() {
   const { t } = useTranslation();
 
   return (
-    <Screen tone="primary" padded={false} edges={["top", "bottom"]}>
-      <View className="flex-1 px-6">
-        <View className="items-center pt-2">
-          <Mark size="sm" />
-        </View>
+    <Screen tone="default" padded={false} edges={["top", "bottom"]}>
+      {/* Decorative tonal split: cream above the wave, redder cream below. */}
+      <WaveDivider className="absolute inset-x-0 bottom-0 top-[27%]" />
 
-        <View className="flex-1 items-center justify-center">
-          <Image
-            source={HERO}
-            resizeMode="contain"
-            className="h-full w-full"
-            style={{ opacity: 0.95 }}
-          />
-        </View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
+        <View className="flex-1 px-6 pb-2">
+          {/* Brand + welcome centered in the space above the actions. */}
+          <View className="flex-1 items-center justify-center gap-5">
+            <Mark size="xl" />
+            <View className="items-center gap-2">
+              <AppText variant="headline" tone="brand" className="text-center">
+                {t("auth.chooser.heading")}
+              </AppText>
+              <AppText variant="body" tone="brandMuted" className="text-center">
+                {t("auth.chooser.subtitle")}
+              </AppText>
+            </View>
+          </View>
 
-        <View className="gap-3 pb-2">
-          <Pressable
-            accessibilityRole="link"
-            hitSlop={8}
-            onPress={() => router.push("/(auth)/guest")}
-            className="items-center py-2"
-          >
-            <AppText variant="body">{t("auth.chooser.guest")}</AppText>
-          </Pressable>
-          <Button
-            label={t("auth.chooser.login")}
-            variant="secondary"
-            size="lg"
-            fullWidth
-            onPress={() => router.push("/(auth)/login")}
-          />
-          <Button
-            label={t("auth.chooser.register")}
-            variant="ghost"
-            size="lg"
-            fullWidth
-            labelTone="onPrimary"
-            className="border border-onPrimary/40"
-            onPress={() => router.push("/(auth)/register")}
-          />
+          {/* Guest link and primary actions. */}
+          <View className="gap-3">
+            <Pressable
+              accessibilityRole="link"
+              hitSlop={8}
+              className="items-center py-2"
+              onPress={() => router.push("/(auth)/guest")}
+            >
+              <AppText variant="body" tone="brandMuted">
+                {t("auth.chooser.guest")}
+              </AppText>
+            </Pressable>
 
-          <AppText variant="caption" className="mt-2 text-center">
-            {t("auth.chooser.or")}
-          </AppText>
+            <Button
+              label={t("auth.chooser.login")}
+              variant="primary"
+              size="lg"
+              fullWidth
+              onPress={() => router.push("/(auth)/login")}
+            />
+            <Button
+              label={t("auth.chooser.register")}
+              variant="primary"
+              size="lg"
+              fullWidth
+              onPress={() => router.push("/(auth)/register")}
+            />
+          </View>
 
-          <View className="flex-row items-center justify-center gap-4">
-            <IconButton name="logo-google" accessibilityLabel="Google" tone="onPrimary" />
-            <IconButton name="logo-apple" accessibilityLabel="Apple" tone="onPrimary" />
-            <IconButton name="logo-facebook" accessibilityLabel="Facebook" tone="onPrimary" />
+          {/* Bottom cluster: social sign-in, anchored to the base. */}
+          <View className="gap-6 pt-8">
+            <View className="flex-row items-center gap-3">
+              <View className="h-px flex-1 bg-primary/20" />
+              <AppText variant="caption" tone="brandMuted">
+                {t("auth.chooser.or")}
+              </AppText>
+              <View className="h-px flex-1 bg-primary/20" />
+            </View>
+
+            <View className="flex-row items-center justify-center gap-5">
+              <SocialButton accessibilityLabel="Google">
+                <GoogleIcon size={26} />
+              </SocialButton>
+              <SocialButton accessibilityLabel="Apple">
+                <Icon name="logo-apple" size="lg" />
+              </SocialButton>
+              <SocialButton accessibilityLabel="Spotify">
+                <Image source={SPOTIFY} resizeMode="contain" className="h-7 w-7" />
+              </SocialButton>
+            </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </Screen>
   );
 }

@@ -34,8 +34,13 @@ function buildUrl(path: string, params?: Record<string, unknown>): string {
   return query ? `${url}?${query}` : url;
 }
 
-export async function vespinFetch<T>(url: string, options?: RequestInit): Promise<T>;
+// Overload order matters: TypeScript's `Parameters<typeof vespinFetch>` resolves
+// to the LAST overload. Orval's generated client derives the type of its
+// per-request options from `Parameters<typeof vespinFetch>[1]`, so the
+// `(url, options?: RequestInit)` form must come last or that type collapses to
+// `undefined` and the generated spreads fail to type-check.
 export async function vespinFetch<T>(options: FetchOptions): Promise<T>;
+export async function vespinFetch<T>(url: string, options?: RequestInit): Promise<T>;
 export async function vespinFetch<T>(input: string | FetchOptions, init?: RequestInit): Promise<T> {
   const generatedCall = typeof input === "string";
   const fetchOptions = generatedCall
