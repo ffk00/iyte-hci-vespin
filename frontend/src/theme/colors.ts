@@ -55,8 +55,32 @@ export const semantic = {
   border: primitive.neutral[300],
   danger: primitive.status.danger,
   success: primitive.status.success,
+  // Pairing-result sheet (success/fail). A soft pink ground with a deep-maroon
+  // action button, distinct from `primary` — these match the result mockups
+  // exactly and aren't reused elsewhere.
+  notifSurface: "#F2DADA",
+  notifAction: "#73383C",
 } as const;
 
 export const colors = semantic;
 
 export type ColorToken = keyof typeof semantic;
+
+/**
+ * The Home background gradient, tinted to the *focused* speaker's color and
+ * fading to cream at the bottom. These are brand art colors (not semantic
+ * tokens) consumed by `expo-linear-gradient`, which can't read NativeWind
+ * classes — so they live here as the single source of truth. Red is the
+ * supplied value; yellow/blue are derived to sit in the same dusty family as
+ * their speaker art.
+ */
+export const speakerGradient = {
+  vespin_classic: ["#B46875", primitive.brand.cream[100]], // red
+  vespin_mini: ["#B4A368", primitive.brand.cream[100]], // yellow
+  vespin_pro: ["#6884B4", primitive.brand.cream[100]], // blue
+} as const;
+
+/** Gradient stops: top 45% holds the tint, fading to cream by the bottom. */
+export const gradientLocations = [0.45, 1] as const;
+
+export type SpeakerGradientKey = keyof typeof speakerGradient;

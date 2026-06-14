@@ -267,6 +267,25 @@ consumer to re-render on every change.
 NEVER use `useState` for state that needs to persist across screens. Lift to
 a Zustand store in the feature folder.
 
+## Devices pairing flow is local-only (intentional)
+
+The device pairing flow (`src/features/devices/`) is a **scripted demo** and
+**deliberately makes no API calls** — see `specs/devices-demo-flow.md`. This is
+an exception to the usual "wrap the generated hook" rule:
+
+- Paired speakers live in a Zustand store (`features/devices/store.ts`), not
+  TanStack Query. There is no `useCreateDevice`/`useGetDevices` here. Do NOT
+  "fix" this by wiring `POST /devices` — the local-only behavior is the spec.
+- The success/fail outcome is a fixed script (`features/devices/simulatePairing.ts`:
+  `success`, `fail`, `success`, then success), keyed off the attempt index — it
+  is not derived from any network response.
+- The simulated fields (`batteryLevel`, `firmwareVersion`, `isConnected`) are
+  seeded in the store at add time, consistent with the root `CLAUDE.md`
+  hardware-simulation boundary.
+
+This exception is scoped to the devices demo flow only. Everything else still
+follows the TanStack Query + domain-hook conventions above.
+
 ## Forms
 
 React Hook Form + Zod. Pattern:

@@ -63,7 +63,60 @@
       "registered": "Registered"
     }
   },
-  "devices": {},
+  "devices": {
+    "home": {
+      "title": "MY DEVICE",
+      "infoLabel": "About",
+      "addLabel": "Add device",
+      "openLabel": "Open device",
+      "powerLabel": "Toggle power",
+      "noName": "No Name",
+      "noProducts": "No products connected yet",
+      "hint": "Tap the plus button to add and connect your speaker",
+      "connected": "Connected",
+      "standby": "Standby"
+    },
+    "discover": {
+      "finding": "Finding your device...",
+      "pickTitle": "Choose your speaker",
+      "pickSubtitle": "Select the device you want to connect",
+      "connect": "Connect",
+      "cancel": "Cancel"
+    },
+    "pair": {
+      "reviewTitle": "Name your speaker",
+      "nameField": "Speaker name",
+      "connect": "Connect",
+      "back": "Back",
+      "successTitle": "Successful",
+      "successBody": "Your new device is successfully added.",
+      "failTitle": "Connection Fail",
+      "failBody": "Your new device couldn't be found please try again.",
+      "done": "Done"
+    },
+    "detail": {
+      "battery": "Battery",
+      "firmware": "Firmware",
+      "style": "Choose your style",
+      "styleSoon": "Style controls coming soon",
+      "offTitle": "Speaker is off",
+      "offBody": "Turn it on to see details"
+    },
+    "models": {
+      "vespin_classic": "Vespin Classic",
+      "vespin_mini": "Vespin Mini",
+      "vespin_pro": "Vespin Pro"
+    },
+    "defaultNames": {
+      "vespin_classic": "Living Room Speaker",
+      "vespin_mini": "Bed Room Speaker",
+      "vespin_pro": "Studio Speaker"
+    },
+    "errors": {
+      "nameRequired": "Please enter a name",
+      "nameTooLong": "Name is too long"
+    }
+  },
   "eq": {},
   "party": {},
   "firmware": {},
