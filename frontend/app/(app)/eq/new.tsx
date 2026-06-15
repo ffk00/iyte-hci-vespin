@@ -1,9 +1,5 @@
-import { Text, View } from "react-native";
+import { EqEditor } from "@/features/eq-profiles/components/EqEditor";
 
 export default function NewEqProfileScreen() {
-  return (
-    <View className="flex-1 items-center justify-center bg-background p-4">
-      <Text className="text-ink">New EQ profile</Text>
-    </View>
-  );
+  return <EqEditor />;
 }
