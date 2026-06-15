@@ -4,7 +4,7 @@ import { useSurfaceTone } from "@/providers/SurfaceProvider";
 
 export type IconName = React.ComponentProps<typeof Ionicons>["name"];
 export type IconSize = "sm" | "md" | "lg";
-export type IconTone = "default" | "muted" | "onPrimary" | "danger";
+export type IconTone = "default" | "muted" | "onPrimary" | "danger" | "success";
 
 const SIZE: Record<IconSize, number> = {
   sm: 16,
@@ -17,6 +17,7 @@ const TONE: Record<IconTone, string> = {
   muted: semantic.muted,
   onPrimary: semantic.onPrimary,
   danger: semantic.danger,
+  success: semantic.success,
 };
 
 type Props = {
