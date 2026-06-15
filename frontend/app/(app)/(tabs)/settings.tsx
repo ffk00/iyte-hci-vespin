@@ -1,5 +1,5 @@
-import { AccountPanel } from "@/features/auth/components/AccountPanel";
+import { SettingsHome } from "@/features/settings/components/SettingsHome";
 
 export default function SettingsTab() {
-  return <AccountPanel />;
+  return <SettingsHome />;
 }
