@@ -129,16 +129,9 @@
       "standby": "Beklemede"
     },
     "discover": {
-      "finding": "Cihazınız aranıyor...",
-      "pickTitle": "Hoparlörünüzü seçin",
-      "pickSubtitle": "Bağlamak istediğiniz cihazı seçin",
-      "connect": "Bağlan",
-      "cancel": "İptal"
+      "finding": "Cihazınız aranıyor..."
     },
     "pair": {
-      "reviewTitle": "Hoparlörünüzü adlandırın",
-      "nameField": "Hoparlör adı",
-      "connect": "Bağlan",
       "back": "Geri",
       "successTitle": "Başarılı",
       "successBody": "Yeni cihazınız başarıyla eklendi.",
@@ -147,12 +140,24 @@
       "done": "Tamam"
     },
     "detail": {
-      "battery": "Pil",
-      "firmware": "Yazılım",
       "style": "Tarzınızı seçin",
-      "styleSoon": "Tarz ayarları yakında",
+      "styleLabel": "Tarzı değiştir",
+      "music": "Müziğinizi seçin",
+      "trackArtist": "Sonah Jobarteh",
+      "trackTitle": "Balance",
+      "prev": "Önceki parça",
+      "play": "Oynat",
+      "pause": "Duraklat",
+      "next": "Sonraki parça",
       "offTitle": "Hoparlör kapalı",
-      "offBody": "Detayları görmek için açın"
+      "offBody": "Detayları görmek için açın",
+      "presets": {
+        "none": "Yok",
+        "jazz": "Jazz",
+        "rock": "Rock",
+        "demo": "Demo",
+        "bass": "Bass"
+      }
     },
     "models": {
       "vespin_classic": "Vespin Classic",
@@ -163,10 +168,6 @@
       "vespin_classic": "Oturma Odası Hoparlörü",
       "vespin_mini": "Yatak Odası Hoparlörü",
       "vespin_pro": "Stüdyo Hoparlörü"
-    },
-    "errors": {
-      "nameRequired": "Lütfen bir isim girin",
-      "nameTooLong": "İsim çok uzun"
     }
   },
   "eq": {},

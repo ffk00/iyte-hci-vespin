@@ -43,8 +43,27 @@ export const SPEAKER_CATALOG: readonly SpeakerModel[] = [
 
 export const STAND_IMAGE: ImageSourcePropType = require("../../../assets/speakers/speaker-stand.png");
 
+/**
+ * The "Choose your style" artwork cycled through on the detail screen. Purely
+ * cosmetic — there is no audio engine behind it.
+ */
+export const STYLE_IMAGES: readonly ImageSourcePropType[] = [
+  require("../../../assets/style-picker/style-1.png"),
+  require("../../../assets/style-picker/style-2.png"),
+  require("../../../assets/style-picker/style-3.png"),
+];
+
 export function speakerForType(deviceType: string): SpeakerModel | undefined {
   return SPEAKER_CATALOG.find((model) => model.deviceType === deviceType);
+}
+
+/**
+ * The speaker a successful pairing produces, by add-order. There is no chooser
+ * in the reference flow — the n-th paired speaker is scripted: 1st red Classic
+ * ("Living Room"), 2nd yellow Mini ("Bed Room"), 3rd blue Pro, then it cycles.
+ */
+export function scriptedSpeaker(addIndex: number): SpeakerModel {
+  return SPEAKER_CATALOG[addIndex % SPEAKER_CATALOG.length];
 }
 
 /**
