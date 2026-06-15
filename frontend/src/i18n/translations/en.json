@@ -4,22 +4,39 @@
     "account": {
       "guest": "Guest account"
     },
+    "onboarding": {
+      "slide1Title": "Timeless Sound",
+      "slide1Body": "Meet Vespin, where timeless design meets modern sound.",
+      "slide2Title": "Made for Your Moments",
+      "slide2Body": "From slow mornings to late-night sessions, your sound moves with you.",
+      "slide3Title": "Shape Your Sound",
+      "slide3Body": "Control your speaker, adjust the ambience, and create a sound that feels yours.",
+      "next": "Next",
+      "back": "Back",
+      "getStarted": "Get Started",
+      "sound": "Sound",
+      "ambiance": "Ambiance",
+      "volume": "Volume"
+    },
     "welcome": {
-      "title": "Welcome",
+      "title": "WELCOME",
       "start": "Start",
-      "termsPrefix": "By continuing, you agree to our ",
-      "termsOfUse": "Terms of Use",
-      "termsAnd": " and ",
-      "privacy": "Privacy Policy",
-      "termsSuffix": "."
+      "guestStart": "Log in without registering",
+      "licence": "Licence Agreement",
+      "privacy": "Privacy Policy"
     },
     "chooser": {
       "heading": "Welcome to VESPIN",
-      "subtitle": "Smart sound. Effortless control. All in one place.",
-      "guest": "Continue as guest",
-      "login": "Log in",
-      "register": "Sign up",
+      "subtitle": "Smart sound. Effortless control.\nAll in one place.",
+      "login": "Log in to VESPIN",
+      "register": "Sign up to VESPIN",
       "or": "or continue with"
+    },
+    "terms": {
+      "prefix": "By continuing , you agree to ",
+      "use": "Term of Use",
+      "and": " and ",
+      "privacy": "Privacy Policy."
     },
     "errors": {
       "generic": "Something went wrong. Please try again.",
@@ -30,7 +47,12 @@
     "fields": {
       "displayName": "Display name",
       "email": "Email",
-      "password": "Password"
+      "password": "Password",
+      "fullName": "Full name or username",
+      "emailOrPhone": "Email or phone number",
+      "phoneOrEmail": "Phone number or email",
+      "phonePlaceholder": "0xxx-xxx-xxxx / name@gmail.com",
+      "code": "XXXXXX"
     },
     "guest": {
       "chooserLink": "Back",
@@ -40,23 +62,53 @@
       "title": "Continue as guest"
     },
     "login": {
-      "guestLink": "Continue as guest",
-      "registerLink": "Create an account",
+      "title": "Log in to VESPIN",
+      "subtitle": "Lock your sound",
       "submit": "Log in",
       "submitting": "Logging in...",
-      "subtitle": "Use your Vespin account to sync your speaker setup.",
-      "title": "Log in"
+      "forgot": "Forgot Password ?",
+      "incorrect": "Incorrect Password. Please try again",
+      "guestLink": "Continue as guest",
+      "registerLink": "Create an account"
     },
     "logout": {
       "submit": "Log out",
       "submitting": "Logging out..."
     },
     "register": {
-      "loginLink": "Already have an account? Log in",
-      "submit": "Create account",
+      "title": "Sign Up to VESPIN",
+      "subtitle": "Join VESPIN to unlock your sound",
+      "submit": "Create Account",
       "submitting": "Creating account...",
-      "subtitle": "Register a new account, or convert your guest session if you are already using one.",
-      "title": "Create account"
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "forgot": {
+      "title": "Forgot Password ?",
+      "label": "Phone number or email",
+      "send": "Send message",
+      "backHome": "Back to homepage"
+    },
+    "verify": {
+      "title": "Account Verification",
+      "label": "Please enter your code.",
+      "send": "Send message",
+      "goBack": "go back"
+    },
+    "reset": {
+      "title": "Reset password",
+      "newLabel": "New password",
+      "reLabel": "Re-enter password",
+      "strength": "Password strength:",
+      "weak": "Weak",
+      "fair": "Fair",
+      "good": "Good",
+      "excellent": "Excellent",
+      "save": "Save your password"
+    },
+    "passwordChanged": {
+      "title": "Password changed!",
+      "login": "Log in again"
     },
     "roles": {
       "guest": "Guest",

@@ -1,123 +1,131 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "expo-router";
+import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, Text, TextInput, View } from "react-native";
-import { ApiError } from "@/api/error";
+import { Pressable, ScrollView, View } from "react-native";
+import { Screen } from "@/components/layout/Screen";
+import { WaveDivider } from "@/components/layout/WaveDivider";
+import { AppText } from "@/components/ui/AppText";
+import { Button } from "@/components/ui/Button";
 import { useTranslation } from "@/providers/I18nProvider";
 import { useRegister } from "../hooks/useAuthActions";
 import { registerSchema, type RegisterInput } from "../schemas/register";
+import { AuthField } from "./AuthField";
+import { AuthHero } from "./AuthHero";
+import { SocialRow } from "./SocialRow";
 
 export function RegisterForm() {
   const { t } = useTranslation();
   const register = useRegister();
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-      displayName: "",
-    },
+    defaultValues: { email: "", password: "", displayName: "" },
   });
 
   const submit = form.handleSubmit((values) => register.mutate(values));
-  const errorMessage =
-    register.error instanceof ApiError ? register.error.message : register.error ? t("auth.errors.generic") : null;
 
   return (
-    <View className="flex-1 justify-center bg-background p-6">
-      <View className="gap-6">
-        <View className="gap-2">
-          <Text className="text-3xl font-semibold text-ink">{t("auth.register.title")}</Text>
-          <Text className="text-base text-muted">{t("auth.register.subtitle")}</Text>
-        </View>
+    <Screen tone="default" padded={false} edges={["top", "bottom"]}>
+      <WaveDivider className="absolute inset-x-0 top-0 h-[34%]" />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24, paddingBottom: 24 }}
+      >
+        <AuthHero showBack />
 
-        <View className="gap-4">
-          <View className="gap-2">
-            <Text className="text-sm font-medium text-ink">{t("auth.fields.displayName")}</Text>
-            <Controller
-              control={form.control}
-              name="displayName"
-              render={({ field }) => (
-                <TextInput
-                  autoCapitalize="words"
-                  autoComplete="name"
+        <View className="flex-1 justify-center gap-6">
+          <View className="gap-1">
+            <AppText variant="headline" tone="brand">
+              {t("auth.register.title")}
+            </AppText>
+            <AppText variant="body" tone="brandMuted">
+              {t("auth.register.subtitle")}
+            </AppText>
+          </View>
+
+          <View className="gap-3">
+          <Controller
+            control={form.control}
+            name="displayName"
+            render={({ field }) => (
+              <AuthField
+                icon="person-outline"
+                placeholder={t("auth.fields.fullName")}
+                autoCapitalize="words"
+                autoComplete="name"
+                value={field.value ?? ""}
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+              />
+            )}
+          />
+          <Controller
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <AuthField
+                icon="mail-outline"
+                placeholder={t("auth.fields.emailOrPhone")}
+                autoCapitalize="none"
+                autoComplete="email"
+                keyboardType="email-address"
+                value={field.value}
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+              />
+            )}
+          />
+          <Controller
+            control={form.control}
+            name="password"
+            render={({ field, fieldState }) => (
+              <>
+                <AuthField
+                  icon="lock-closed-outline"
+                  placeholder={t("auth.fields.password")}
+                  autoCapitalize="none"
+                  autoComplete="new-password"
+                  secureTextEntry
+                  value={field.value}
                   onBlur={field.onBlur}
                   onChangeText={field.onChange}
-                  value={field.value}
-                  className="rounded-md border border-border bg-surface px-4 py-3 text-ink"
                 />
-              )}
-            />
-          </View>
+                {fieldState.error?.message ? (
+                  <AppText variant="caption" tone="danger">
+                    {t(fieldState.error.message)}
+                  </AppText>
+                ) : null}
+              </>
+            )}
+          />
 
-          <View className="gap-2">
-            <Text className="text-sm font-medium text-ink">{t("auth.fields.email")}</Text>
-            <Controller
-              control={form.control}
-              name="email"
-              render={({ field, fieldState }) => (
-                <>
-                  <TextInput
-                    autoCapitalize="none"
-                    autoComplete="email"
-                    keyboardType="email-address"
-                    onBlur={field.onBlur}
-                    onChangeText={field.onChange}
-                    value={field.value}
-                    className="rounded-md border border-border bg-surface px-4 py-3 text-ink"
-                  />
-                  {fieldState.error?.message ? (
-                    <Text className="text-sm text-danger">{t(fieldState.error.message)}</Text>
-                  ) : null}
-                </>
-              )}
-            />
-          </View>
-
-          <View className="gap-2">
-            <Text className="text-sm font-medium text-ink">{t("auth.fields.password")}</Text>
-            <Controller
-              control={form.control}
-              name="password"
-              render={({ field, fieldState }) => (
-                <>
-                  <TextInput
-                    autoCapitalize="none"
-                    autoComplete="new-password"
-                    onBlur={field.onBlur}
-                    onChangeText={field.onChange}
-                    secureTextEntry
-                    value={field.value}
-                    className="rounded-md border border-border bg-surface px-4 py-3 text-ink"
-                  />
-                  {fieldState.error?.message ? (
-                    <Text className="text-sm text-danger">{t(fieldState.error.message)}</Text>
-                  ) : null}
-                </>
-              )}
-            />
-          </View>
-
-          {errorMessage ? <Text className="text-sm text-danger">{errorMessage}</Text> : null}
-
-          <Pressable
-            accessibilityRole="button"
+          <Button
+            label={register.isPending ? t("auth.register.submitting") : t("auth.register.submit")}
+            variant="primary"
+            size="lg"
+            fullWidth
             disabled={register.isPending}
             onPress={submit}
-            className="items-center rounded-md bg-primary px-4 py-3 disabled:opacity-60"
-          >
-            <Text className="font-semibold text-onPrimary">
-              {register.isPending ? t("auth.register.submitting") : t("auth.register.submit")}
-            </Text>
-          </Pressable>
+            className="mt-1"
+          />
+
+          <View className="flex-row items-center justify-center gap-2 py-1">
+            <AppText variant="caption" tone="muted">
+              {t("auth.register.haveAccount")}
+            </AppText>
+            <Pressable accessibilityRole="link" hitSlop={8} onPress={() => router.push("/(auth)/login")}>
+              <AppText variant="caption" tone="brand" className="font-bold">
+                {t("auth.register.loginLink")}
+              </AppText>
+            </Pressable>
+          </View>
+          </View>
         </View>
 
-        <Link href="/(auth)/login" asChild>
-          <Pressable accessibilityRole="button">
-            <Text className="text-center font-medium text-primary">{t("auth.register.loginLink")}</Text>
-          </Pressable>
-        </Link>
-      </View>
-    </View>
+        <View className="pb-2">
+          <SocialRow />
+        </View>
+      </ScrollView>
+    </Screen>
   );
 }
