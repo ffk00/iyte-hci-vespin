@@ -75,12 +75,12 @@ export type ColorToken = keyof typeof semantic;
  * their speaker art.
  */
 export const speakerGradient = {
-  vespin_classic: ["#B46875", primitive.brand.cream[100]], // red
-  vespin_mini: ["#B4A368", primitive.brand.cream[100]], // yellow
-  vespin_pro: ["#6884B4", primitive.brand.cream[100]], // blue
+  vespin_classic: ["#DCC0C5", primitive.brand.cream[100]], // red
+  vespin_mini: ["#DBD0B2", primitive.brand.cream[100]], // yellow
+  vespin_pro: ["#C2CCDC", primitive.brand.cream[100]], // blue
 } as const;
 
-/** Gradient stops: top 45% holds the tint, fading to cream by the bottom. */
-export const gradientLocations = [0.45, 1] as const;
+/** Gradient stops: a soft tint up top fading to cream by ~a third down. */
+export const gradientLocations = [0.3, 1] as const;
 
 export type SpeakerGradientKey = keyof typeof speakerGradient;

@@ -129,16 +129,9 @@
       "standby": "Standby"
     },
     "discover": {
-      "finding": "Finding your device...",
-      "pickTitle": "Choose your speaker",
-      "pickSubtitle": "Select the device you want to connect",
-      "connect": "Connect",
-      "cancel": "Cancel"
+      "finding": "Finding your device..."
     },
     "pair": {
-      "reviewTitle": "Name your speaker",
-      "nameField": "Speaker name",
-      "connect": "Connect",
       "back": "Back",
       "successTitle": "Successful",
       "successBody": "Your new device is successfully added.",
@@ -147,12 +140,24 @@
       "done": "Done"
     },
     "detail": {
-      "battery": "Battery",
-      "firmware": "Firmware",
       "style": "Choose your style",
-      "styleSoon": "Style controls coming soon",
+      "styleLabel": "Change style",
+      "music": "Choose your music",
+      "trackArtist": "Sonah Jobarteh",
+      "trackTitle": "Balance",
+      "prev": "Previous track",
+      "play": "Play",
+      "pause": "Pause",
+      "next": "Next track",
       "offTitle": "Speaker is off",
-      "offBody": "Turn it on to see details"
+      "offBody": "Turn it on to see details",
+      "presets": {
+        "none": "None",
+        "jazz": "Jazz",
+        "rock": "Rock",
+        "demo": "Demo",
+        "bass": "Bass"
+      }
     },
     "models": {
       "vespin_classic": "Vespin Classic",
@@ -163,10 +168,6 @@
       "vespin_classic": "Living Room Speaker",
       "vespin_mini": "Bed Room Speaker",
       "vespin_pro": "Studio Speaker"
-    },
-    "errors": {
-      "nameRequired": "Please enter a name",
-      "nameTooLong": "Name is too long"
     }
   },
   "eq": {},
