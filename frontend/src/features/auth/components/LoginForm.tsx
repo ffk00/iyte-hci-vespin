@@ -1,110 +1,121 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "expo-router";
+import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, Text, TextInput, View } from "react-native";
-import { ApiError } from "@/api/error";
+import { Pressable, ScrollView, View } from "react-native";
+import { Screen } from "@/components/layout/Screen";
+import { WaveDivider } from "@/components/layout/WaveDivider";
+import { AppText } from "@/components/ui/AppText";
+import { Button } from "@/components/ui/Button";
+import { Icon } from "@/components/ui/Icon";
 import { useTranslation } from "@/providers/I18nProvider";
 import { useLogin } from "../hooks/useAuthActions";
 import { loginSchema, type LoginInput } from "../schemas/login";
+import { AuthField } from "./AuthField";
+import { AuthHero } from "./AuthHero";
+import { SocialRow } from "./SocialRow";
+import { TermsNote } from "./TermsNote";
 
 export function LoginForm() {
   const { t } = useTranslation();
   const login = useLogin();
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
   });
 
   const submit = form.handleSubmit((values) => login.mutate(values));
-  const errorMessage = login.error instanceof ApiError ? login.error.message : login.error ? t("auth.errors.generic") : null;
 
   return (
-    <View className="flex-1 justify-center bg-background p-6">
-      <View className="gap-6">
-        <View className="gap-2">
-          <Text className="text-3xl font-semibold text-ink">{t("auth.login.title")}</Text>
-          <Text className="text-base text-muted">{t("auth.login.subtitle")}</Text>
-        </View>
+    <Screen tone="default" padded={false} edges={["top", "bottom"]}>
+      <WaveDivider className="absolute inset-x-0 top-0 h-[30%]" />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24, paddingBottom: 24 }}
+      >
+        <AuthHero showBack />
 
-        <View className="gap-4">
-          <View className="gap-2">
-            <Text className="text-sm font-medium text-ink">{t("auth.fields.email")}</Text>
-            <Controller
-              control={form.control}
-              name="email"
-              render={({ field, fieldState }) => (
-                <>
-                  <TextInput
-                    autoCapitalize="none"
-                    autoComplete="email"
-                    keyboardType="email-address"
-                    onBlur={field.onBlur}
-                    onChangeText={field.onChange}
-                    value={field.value}
-                    className="rounded-md border border-border bg-surface px-4 py-3 text-ink"
-                  />
-                  {fieldState.error?.message ? (
-                    <Text className="text-sm text-danger">{t(fieldState.error.message)}</Text>
-                  ) : null}
-                </>
-              )}
-            />
+        <View className="flex-1 justify-center gap-6">
+          <View className="gap-1">
+            <AppText variant="headline" tone="brand">
+              {t("auth.login.title")}
+            </AppText>
+            <AppText variant="body" tone="brandMuted">
+              {t("auth.login.subtitle")}
+            </AppText>
           </View>
 
-          <View className="gap-2">
-            <Text className="text-sm font-medium text-ink">{t("auth.fields.password")}</Text>
-            <Controller
-              control={form.control}
-              name="password"
-              render={({ field, fieldState }) => (
-                <>
-                  <TextInput
-                    autoCapitalize="none"
-                    autoComplete="password"
-                    onBlur={field.onBlur}
-                    onChangeText={field.onChange}
-                    secureTextEntry
-                    value={field.value}
-                    className="rounded-md border border-border bg-surface px-4 py-3 text-ink"
-                  />
-                  {fieldState.error?.message ? (
-                    <Text className="text-sm text-danger">{t(fieldState.error.message)}</Text>
-                  ) : null}
-                </>
-              )}
-            />
-          </View>
+          <View className="gap-3">
+          <Controller
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <AuthField
+                icon="person-outline"
+                placeholder={t("auth.fields.fullName")}
+                autoCapitalize="none"
+                autoComplete="email"
+                keyboardType="email-address"
+                value={field.value}
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+              />
+            )}
+          />
+          <Controller
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <AuthField
+                icon="lock-closed-outline"
+                placeholder={t("auth.fields.password")}
+                autoCapitalize="none"
+                autoComplete="password"
+                secureTextEntry
+                value={field.value}
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+              />
+            )}
+          />
 
-          {errorMessage ? <Text className="text-sm text-danger">{errorMessage}</Text> : null}
+          {login.isError ? (
+            <View className="flex-row items-center gap-2">
+              <Icon name="alert-circle" size="sm" tone="danger" />
+              <AppText variant="caption" tone="danger" className="font-semibold">
+                {t("auth.login.incorrect")}
+              </AppText>
+            </View>
+          ) : null}
 
-          <Pressable
-            accessibilityRole="button"
+          <Button
+            label={login.isPending ? t("auth.login.submitting") : t("auth.login.submit")}
+            variant="primary"
+            size="lg"
+            fullWidth
             disabled={login.isPending}
             onPress={submit}
-            className="items-center rounded-md bg-primary px-4 py-3 disabled:opacity-60"
+            className="mt-1"
+          />
+
+          <Pressable
+            accessibilityRole="link"
+            hitSlop={8}
+            className="items-center py-1"
+            onPress={() => router.push("/(auth)/forgot-password")}
           >
-            <Text className="font-semibold text-onPrimary">
-              {login.isPending ? t("auth.login.submitting") : t("auth.login.submit")}
-            </Text>
+            <AppText variant="caption" tone="brandMuted">
+              {t("auth.login.forgot")}
+            </AppText>
           </Pressable>
+          </View>
         </View>
 
-        <View className="gap-3">
-          <Link href="/(auth)/register" asChild>
-            <Pressable accessibilityRole="button">
-              <Text className="text-center font-medium text-primary">{t("auth.login.registerLink")}</Text>
-            </Pressable>
-          </Link>
-          <Link href="/(auth)/guest" asChild>
-            <Pressable accessibilityRole="button">
-              <Text className="text-center text-muted">{t("auth.login.guestLink")}</Text>
-            </Pressable>
-          </Link>
+        <View className="gap-6 pb-2">
+          <SocialRow />
+          <TermsNote />
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </Screen>
   );
 }

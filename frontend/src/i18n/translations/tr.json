@@ -4,22 +4,39 @@
     "account": {
       "guest": "Misafir hesap"
     },
+    "onboarding": {
+      "slide1Title": "Zamansız Ses",
+      "slide1Body": "Vespin ile tanışın; zamansız tasarımın modern sesle buluştuğu yer.",
+      "slide2Title": "Anlarınıza Göre",
+      "slide2Body": "Yavaş sabahlardan gece geç saatlere, sesiniz sizinle hareket eder.",
+      "slide3Title": "Sesini Şekillendir",
+      "slide3Body": "Hoparlörünüzü kontrol edin, ortamı ayarlayın ve size ait bir ses yaratın.",
+      "next": "İleri",
+      "back": "Geri",
+      "getStarted": "Başla",
+      "sound": "Ses",
+      "ambiance": "Ortam",
+      "volume": "Seviye"
+    },
     "welcome": {
-      "title": "Hoşgeldin",
+      "title": "HOŞGELDİN",
       "start": "Başla",
-      "termsPrefix": "Devam ederek ",
-      "termsOfUse": "Kullanım Şartları",
-      "termsAnd": " ve ",
-      "privacy": "Gizlilik Politikasi",
-      "termsSuffix": "'ni kabul etmis olursunuz."
+      "guestStart": "Kayıt olmadan giriş yap",
+      "licence": "Lisans Sözleşmesi",
+      "privacy": "Gizlilik Politikası"
     },
     "chooser": {
       "heading": "VESPIN'e Hoşgeldin",
-      "subtitle": "Akıllı ses. Zahmetsiz kontrol. Hepsi tek yerde.",
-      "guest": "Misafir olarak devam et",
-      "login": "Giriş yap",
-      "register": "Kayıt ol",
+      "subtitle": "Akıllı ses. Zahmetsiz kontrol.\nHepsi tek yerde.",
+      "login": "VESPIN'e giriş yap",
+      "register": "VESPIN'e kayıt ol",
       "or": "veya devam et"
+    },
+    "terms": {
+      "prefix": "Devam ederek ",
+      "use": "Kullanım Şartları",
+      "and": " ve ",
+      "privacy": "Gizlilik Politikası'nı kabul edersiniz."
     },
     "errors": {
       "generic": "Bir sorun oluştu. Lütfen tekrar deneyin.",
@@ -30,7 +47,12 @@
     "fields": {
       "displayName": "Görünen ad",
       "email": "E-posta",
-      "password": "Şifre"
+      "password": "Şifre",
+      "fullName": "Ad soyad veya kullanıcı adı",
+      "emailOrPhone": "E-posta veya telefon numarası",
+      "phoneOrEmail": "Telefon numarası veya e-posta",
+      "phonePlaceholder": "0xxx-xxx-xxxx / ad@gmail.com",
+      "code": "XXXXXX"
     },
     "guest": {
       "chooserLink": "Geri",
@@ -40,23 +62,53 @@
       "title": "Misafir olarak devam et"
     },
     "login": {
-      "guestLink": "Misafir olarak devam et",
-      "registerLink": "Hesap olustur",
+      "title": "VESPIN'e giriş yap",
+      "subtitle": "Sesini kilitle",
       "submit": "Giriş yap",
       "submitting": "Giriş yapılıyor...",
-      "subtitle": "Hoparlör kurulumunuzu senkronize etmek için Vespin hesabınızı kullanın.",
-      "title": "Giriş yap"
+      "forgot": "Şifreni mi unuttun ?",
+      "incorrect": "Hatalı şifre. Lütfen tekrar deneyin",
+      "guestLink": "Misafir olarak devam et",
+      "registerLink": "Hesap oluştur"
     },
     "logout": {
       "submit": "Çıkış yap",
       "submitting": "Çıkış yapılıyor..."
     },
     "register": {
-      "loginLink": "Zaten hesabınız var mı? Giriş yapın",
-      "submit": "Hesap oluştur",
+      "title": "VESPIN'e kayıt ol",
+      "subtitle": "Sesini açığa çıkarmak için VESPIN'e katıl",
+      "submit": "Hesap Oluştur",
       "submitting": "Hesap oluşturuluyor...",
-      "subtitle": "Yeni hesap oluşturun veya zaten misafir olarak kullanıyorsanız oturumunuzu donusturun.",
-      "title": "Hesap oluştur"
+      "haveAccount": "Zaten hesabın var mı?",
+      "loginLink": "Giriş yap"
+    },
+    "forgot": {
+      "title": "Şifreni mi unuttun ?",
+      "label": "Telefon numarası veya e-posta",
+      "send": "Mesaj gönder",
+      "backHome": "Ana sayfaya dön"
+    },
+    "verify": {
+      "title": "Hesap Doğrulama",
+      "label": "Lütfen kodunuzu girin.",
+      "send": "Mesaj gönder",
+      "goBack": "geri dön"
+    },
+    "reset": {
+      "title": "Şifreyi sıfırla",
+      "newLabel": "Yeni şifre",
+      "reLabel": "Şifreyi tekrar gir",
+      "strength": "Şifre gücü:",
+      "weak": "Zayıf",
+      "fair": "Orta",
+      "good": "İyi",
+      "excellent": "Mükemmel",
+      "save": "Şifreni kaydet"
+    },
+    "passwordChanged": {
+      "title": "Şifre değişti!",
+      "login": "Tekrar giriş yap"
     },
     "roles": {
       "guest": "Misafir",
